@@ -31,9 +31,9 @@ public class SideBar : MonoBehaviour
         mTabMenu = Instantiate( ObjectManager.getMenu("TabMenu"), transform ).GetComponent<TabMenu>();
         mTabMenu.setPositions(0, 0, 0, 0, 0, 0.1f, 1, 0.9f);
         //make the sub menus
-        mInfoMenu = Instantiate(ObjectManager.getMenu("InfoMenu"), transform).GetComponent<InfoMenu>();
-        mInventoryMenu = Instantiate(ObjectManager.getMenu("InventoryMenu"), transform).GetComponent<InventoryMenu>();
-        mActionMenu = Instantiate(ObjectManager.getMenu("ActionMenu"), transform).GetComponent<ActionMenu>();
+        mInfoMenu = Instantiate(ObjectManager.getMenu("InfoMenu"), mTabMenu.transform).GetComponent<InfoMenu>();
+        mInventoryMenu = Instantiate(ObjectManager.getMenu("InventoryMenu"), mTabMenu.transform).GetComponent<InventoryMenu>();
+        mActionMenu = Instantiate(ObjectManager.getMenu("ActionMenu"), mTabMenu.transform).GetComponent<ActionMenu>();
         //add submenus as tabs
         mTabMenu.addMenu(0, mInfoMenu, "INFO");
         mTabMenu.addMenu(1, mInventoryMenu, "ITEMS");

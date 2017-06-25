@@ -12,7 +12,7 @@ public class InventoryMenu : Menu
     //-------------------------------------------------------------------------------------------------
     // unity methods
     //-------------------------------------------------------------------------------------------------
-    void Start()
+    protected override void Start()
     {
         base.Start();
         mText = GetComponentInChildren<Text>();
@@ -24,7 +24,8 @@ public class InventoryMenu : Menu
     public void populate(Entity ent)
     {
         //populate the inventory for the Entity
-        EntityAction ent_act = (EntityAction)ent;
+        //EntityAction ent_act = (EntityAction)ent;
+        EntityAction ent_act = ent as EntityAction;
         if (ent_act)
             mText.text = ent_act.printInventory();
         else

@@ -92,7 +92,6 @@ public class HUD : MonoBehaviour
         {
             //populate the menu
             mPopMenu.populate(sel_act, ent, hitPoint);
-            //Debug.Log("Setting PopMenu to enabled");
             mPopMenu.gameObject.SetActive(true);
         }
 

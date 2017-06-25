@@ -11,6 +11,22 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1893865751091732}
   m_IsPrefabParent: 1
+--- !u!1 &1048758324080706
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4708012521112474}
+  - component: {fileID: 114493242707056996}
+  m_Layer: 0
+  m_Name: UnitInventory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1545963400268536
 GameObject:
   m_ObjectHideFlags: 0
@@ -19,6 +35,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4491072216403466}
+  - component: {fileID: 114612645949874408}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -206,12 +223,13 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1893865751091732}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 30, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4491072216403466}
   - {fileID: 4774669325992322}
   - {fileID: 4394378601261762}
+  - {fileID: 4708012521112474}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -258,6 +276,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4491072216403466}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4708012521112474
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1048758324080706}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4310542057691214}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4774669325992322
 Transform:
@@ -465,6 +496,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mName: building0
   mHP: 100
+  mTown: {fileID: 0}
   mType: 0
 --- !u!114 &114419714992890550
 MonoBehaviour:
@@ -478,6 +510,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mActions: []
+--- !u!114 &114493242707056996
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1048758324080706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd8d0eb58d4d3544281ab7a7556233ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mName: UnitInventory
+  mCapacity: 10
+--- !u!114 &114612645949874408
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1545963400268536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d5cac19f677eee4ebe0b20cec96f197, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114616441590680556
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -16,13 +16,4 @@ public class Item : Selectable
     // unity methods
     //-------------------------------------------------------------------------------------------------
 
-    // Use this for initialization
-    void Start ()
-    {
-	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-	}
 }

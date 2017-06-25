@@ -12,6 +12,8 @@ public class GameObjectList : MonoBehaviour
     public List<GameObject> mActions;
     public List<GameObject> mItems;
     public List<GameObject> mMenus;
+    public List<GameObject> mResources;
+    public List<GameObject> mUnits;
     //public GameObject player;
 
     //private members
@@ -28,6 +30,8 @@ public class GameObjectList : MonoBehaviour
             mActions = getActionComponentObjects();
             mItems = getItemComponentObjects();
             mMenus = getMenuComponentObjects();
+            mResources = getResourceComponentObjects();
+            mUnits = getUnitComponentObjects();
             ObjectManager.setGameObjectList(this);
             created = true;
         }
@@ -79,6 +83,24 @@ public class GameObjectList : MonoBehaviour
         }
         return null;
     }
+    public GameObject getResource(string res_name)
+    {
+        for (int i = 0; i < mResources.Count; i++)
+        {
+            Resource res = mResources[i].GetComponent<Resource>();
+            if (res && res.mName == res_name) return mResources[i];
+        }
+        return null;
+    }
+    public GameObject getUnit(string unit_name)
+    {
+        for (int i = 0; i < mUnits.Count; i++)
+        {
+            Unit unit = mUnits[i].GetComponent<Unit>();
+            if (unit && unit.mName == unit_name) return mUnits[i];
+        }
+        return null;
+    }
 
     //-------------------------------------------------------------------------------------------------
     // private methods
@@ -127,6 +149,32 @@ public class GameObjectList : MonoBehaviour
                 menu_objects.Add(cobj.gameObject);
         }
         return menu_objects;
+    }
+    private List<GameObject> getResourceComponentObjects()
+    {
+        //returns a list of child game objects which contain a Resource script component 
+        //this allows to just drop the Resource prefabs as children in GameObjectList/Resources
+        List<GameObject> res_objects = new List<GameObject>();
+        Component[] child_objects = this.GetComponentsInChildren<Transform>();
+        foreach (Component cobj in child_objects)
+        {
+            if (cobj.gameObject.GetComponent<Resource>() != null)
+                res_objects.Add(cobj.gameObject);
+        }
+        return res_objects;
+    }
+    private List<GameObject> getUnitComponentObjects()
+    {
+        //returns a list of child game objects which contain a Unit script component 
+        //this allows to just drop the Unit prefabs as children in GameObjectList/Units
+        List<GameObject> unit_objects = new List<GameObject>();
+        Component[] child_objects = this.GetComponentsInChildren<Transform>();
+        foreach (Component cobj in child_objects)
+        {
+            if (cobj.gameObject.GetComponent<Unit>() != null)
+                unit_objects.Add(cobj.gameObject);
+        }
+        return unit_objects;
     }
 
 

@@ -182,9 +182,9 @@ public class UserInput : MonoBehaviour {
             
             if ( sel.GetType() == typeof(Unit) )
             {
-                Unit unit = (Unit) sel;
+                //Unit unit = (Unit) sel;
                 GameObject hitObject = findHitObject();
-                EntityHP ent_hp = hitObject.transform.GetComponentInParent<EntityHP>();
+                //EntityHP ent_hp = hitObject.transform.GetComponentInParent<EntityHP>();
                 Vector3 hitPoint = findHitPoint();
                /* //attack if its an EntityHP
                 if (ent_hp)

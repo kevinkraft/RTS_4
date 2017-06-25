@@ -35,7 +35,10 @@ public class ItemGroup : MonoBehaviour
             i++;
         }
         if (remove_type != GameTypes.ItemType.Unknown)
+        {
+            Destroy(mItems[i].gameObject);
             mItems.RemoveAt(i);
+        }
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -83,6 +86,13 @@ public class ItemGroup : MonoBehaviour
         }
         return size;
     }
+    public bool isFull()
+    {
+        if (Mathf.Abs(mCapacity - getSize()) < 0.01)
+            return true;
+        else
+            return false;
+    }
     public string print()
     {
         //returns a string with one item on each line showing the name and amount
@@ -94,6 +104,15 @@ public class ItemGroup : MonoBehaviour
             text += string.Format("{0} : {1:0.00}\n", item.mType.ToString(), item.mAmount);
         }
         return text;
+    }
+    public void wipe()
+    {
+        //deletes the Items, then resets the Item list to be empty
+        foreach(Item item in mItems)
+        {
+            Destroy(item.gameObject);
+        }
+        mItems = new List<Item>();
     }
 
     //-------------------------------------------------------------------------------------------------

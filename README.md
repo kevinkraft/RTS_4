@@ -6,6 +6,8 @@ Download the Builds folder and run the .exe if you want to play what I've done s
 Controls
 ---------
 
+There is nothing wotng with the controls, as far as I know, but it takes a bit of getting used to because some of the actions are continuous and won't be overriden if your holding ctrl when you select the action. If in doubt look at the ActionInfo tab in the sidebar.
+
 alt + rightmouse) tilt the camera
 
 left click) select units and select menu items

@@ -11,7 +11,7 @@ public class ActionMenu : Menu
     //-------------------------------------------------------------------------------------------------
     // unity methods
     //-------------------------------------------------------------------------------------------------
-    void Start()
+    protected override void Start()
     {
         base.Start();
         mText = GetComponentInChildren<Text>();
@@ -24,7 +24,8 @@ public class ActionMenu : Menu
     {
         //populate the info for the Entity
         string text = "";
-        EntityAction ent_act = (EntityAction)ent;
+        //EntityAction ent_act = (EntityAction)ent;
+        EntityAction ent_act = ent as EntityAction;
         if (!ent_act)
             text = "No Actions";
         else

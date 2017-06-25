@@ -35,6 +35,8 @@ public class EntityAction : EntityHP
     }
     public override void Update()
     {
+        if (!isInstantiated)
+            return;
         base.Update();
         /*foreach (var act in mActions.mActions)
         {
@@ -82,6 +84,37 @@ public class EntityAction : EntityHP
     {
         return mInventory.addItem(item);
     }
+    public void dropInventory()
+    {
+        //drop the units inventory on the ground
+        //To Do: Implement Items that are visible on the map
+        //Currently I'm just deleting them
+        mInventory.wipe();
+    }
+    public void dumpInventory()
+    {
+        //drop everything in the inventory into the stockpile
+        Exchange ex = ObjectManager.initExchange(transform);
+        ex.setTarget(getStockpile());
+        ex.setExchangeList(getInventoryDictionary());
+        mActions.prependAction(ex);
+    }
+    public string activeActionType()
+    {
+        if (mActions.size() > 0)
+        {
+            return mActions.mActions[0].mName;
+        }
+        return "";
+    }
+    public Action getActiveAction()
+    {
+        if (mActions.size() > 0)
+        {
+            return mActions.mActions[0];
+        }
+        return null;
+    }
     public ItemGroup getInventory()
     {
         return mInventory;
@@ -97,6 +130,10 @@ public class EntityAction : EntityHP
     public Item getItemOfType(GameTypes.ItemType type)
     {
         return mInventory.getItemOfType(type);
+    }
+    public bool isInventoryFull()
+    {
+        return mInventory.isFull();
     }
     public string printActions()
     {

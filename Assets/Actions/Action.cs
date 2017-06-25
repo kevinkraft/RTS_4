@@ -56,6 +56,11 @@ public class Action : MonoBehaviour
     {
         return "Base Action\n";
     }
+    public virtual void setComplete(bool b)
+    {
+        Debug.Log("in action set complete");
+        mComplete = b;
+    }
 
     //-------------------------------------------------------------------------------------------------
     // private methods

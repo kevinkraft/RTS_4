@@ -19,7 +19,7 @@ public class TabMenu : Menu
     //-------------------------------------------------------------------------------------------------
     // unity methods
     //-------------------------------------------------------------------------------------------------
-    void Start()
+    protected override void Start()
     {
         base.Start();
         TabPane[] panes_array = GetComponentsInChildren<TabPane>();
@@ -38,6 +38,7 @@ public class TabMenu : Menu
 
     public void addMenu(int index, Menu menu, string tab_name)
     {
+        menu.gameObject.transform.SetParent(this.transform);
         if (index > mTabPanes.Count - 1)
             Debug.LogError("given index is out of range of the number of TabPanes.");
         mTabPanes[index].setMenu(menu);

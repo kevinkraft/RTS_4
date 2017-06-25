@@ -37,10 +37,9 @@ public class ExchangeMenu : Menu
     //-------------------------------------------------------------------------------------------------
     // unity methods
     //-------------------------------------------------------------------------------------------------
-    void Start()
+    protected override void Start()
     {
-        //make empty exchange list
-        Dictionary<GameTypes.ItemType, float> mExchangeList = new Dictionary<GameTypes.ItemType, float>();
+        base.Start();
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -53,8 +52,8 @@ public class ExchangeMenu : Menu
     }
     public void addChoice()
     {
-        Debug.Log(mChoiceValue.ToString());
-        Debug.Log(mChoiceType.ToString());
+        //Debug.Log(mChoiceValue.ToString());
+        //Debug.Log(mChoiceType.ToString());
         //check if an item of this type has already been added
         if (mExchangeList.ContainsKey(mChoiceType))
             Debug.Log("This Item type has already been added to the selection. If you want to change the amount, remove it first.");
@@ -117,7 +116,7 @@ public class ExchangeMenu : Menu
     {
         //return a cloned dictionary 
         Dictionary<GameTypes.ItemType, float> fdict = new Dictionary<GameTypes.ItemType, float>();
-        Debug.Log("size of exchange list in menu is " + mExchangeList.Count.ToString());
+        //Debug.Log("size of exchange list in menu is " + mExchangeList.Count.ToString());
         if (mMadeSelection)
             fdict = mExchangeList;
         Dictionary<GameTypes.ItemType, float> cdict = new Dictionary<GameTypes.ItemType, float>(fdict);

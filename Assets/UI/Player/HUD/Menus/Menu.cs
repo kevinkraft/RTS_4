@@ -15,7 +15,7 @@ public class Menu : MonoBehaviour
     //-------------------------------------------------------------------------------------------------
     // unity methods
     //-------------------------------------------------------------------------------------------------
-    protected void Start()
+    protected virtual void Start()
     {
         //get the parent canvas, or dint give a warning if its the menu instance stored in GameObjectList
         mCanvas = GetComponentInParent<Canvas>();

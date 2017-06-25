@@ -22,6 +22,8 @@ public class Exchange : Action
     private bool mWaitForMenu = false;
     private Player mPlayer;
     private ExchangeMenu mExchangeMenu;
+    private int mCyclesToSkip = 2;
+    private int mCycleCounter = 0;
 
     //-------------------------------------------------------------------------------------------------
     // unity methods
@@ -65,21 +67,21 @@ public class Exchange : Action
         //has the exchange list been populated?
         if ( mWaitForMenu )
         {
-            Debug.Log("waiting for menu.");
+            //Debug.Log("waiting for menu.");
             if (mExchangeMenu.hasMadeSelection() == true)
             {
-                Debug.Log("menu selection made.");
+                //Debug.Log("menu selection made.");
                 mExchangeList = mExchangeMenu.getExchangeList();
                 mWaitForMenu = false;
                 mExchangeMenu.clear();
-                Debug.Log(string.Format("size of exhacnge list {0}.",mExchangeList.Count));
+                //Debug.Log(string.Format("size of exhacnge list {0}.",mExchangeList.Count));
             }
             return;
         }
         //is it finished
         if (mExchangeList.Count == 0 && mWaitForMenu == false)
         {
-            Debug.Log("exchange action is finished");
+            //Debug.Log("exchange action is finished");
             mComplete = true;
             return;
         }
@@ -100,7 +102,7 @@ public class Exchange : Action
             }
         }
         //move to the target taking the bounds into account
-        Debug.Log("moving to target for exchange action");
+        //Debug.Log("moving to target for exchange action");
         Vector3 direction = mActer.pointOfTouchingBounds(mTarget);
         mActer.moveTo(direction, false);
     }
@@ -111,6 +113,18 @@ public class Exchange : Action
     public override string print()
     {
         return "Exchange\n";
+    }
+    public void setExchangeList(Dictionary<GameTypes.ItemType, float> list)
+    {
+        mExchangeList = list;
+        mWaitForMenu = false;
+        
+    }
+    public void setExchangeItem(GameTypes.ItemType type, float amount)
+    {
+        Dictionary<GameTypes.ItemType, float> list = new Dictionary<GameTypes.ItemType, float>();
+        list.Add(type, amount);
+        setExchangeList(list);
     }
     public void setTarget(EntityAction target)
     {
@@ -129,14 +143,14 @@ public class Exchange : Action
         {
             //acter doesnt have the item, so cant do exchange
             setRemoveItem(type);
-            Debug.Log("acter doesnt have the item");
+            //Debug.Log("acter doesnt have the item");
             return false;
         }
         //does the acter have enough of the item
         if (act_item.mAmount < cycle_amount)
         {
             cycle_amount = act_item.mAmount;
-            Debug.Log("acter doesnt have enough of the item, adjusting amount");
+            //Debug.Log("acter doesnt have enough of the item, adjusting amount");
         }
         //does the target have the item to receive?
         Item tar_item = getter.getItemOfType(type);
@@ -145,34 +159,48 @@ public class Exchange : Action
             //target doesnt have the item, make one
             tar_item = ObjectManager.initItem(type, getter.getInventory().transform);
             getter.addItem(tar_item);
-            Debug.Log("target doesnt have th item");
+            //Debug.Log("target doesnt have the item");
         }
         //does the target have enough space for this item
-        if (getter.getInventorySize() + cycle_amount > getter.getInventory().mCapacity)
+        float cap = getter.getInventory().mCapacity;
+        float invsize = getter.getInventorySize();
+        if (invsize + cycle_amount > cap)
         {
-            //target doesnt have space
-            setRemoveItem(type);
-            return false;
+            //target doesnt have space, reduce the cycle amount
+            cycle_amount = cap - invsize;
+            if (cycle_amount < 0.01)
+            {
+                setRemoveItem(type);
+                return false;
+            }
+            //control flow moves on if cycle amount is big enough
         }
-        else
+        //target has space, add and remove the amount
+        tar_item.mAmount = tar_item.mAmount + cycle_amount;
+        act_item.mAmount = act_item.mAmount - cycle_amount;
+        if (mExchangeList[type] >= 0)
         {
-            //target has space, add and remove the amount
-            tar_item.mAmount = tar_item.mAmount + cycle_amount;
-            act_item.mAmount = act_item.mAmount - cycle_amount;
-            if (mExchangeList[type] >= 0)
-            {
-                mExchangeList[type] = mExchangeList[type] - cycle_amount;
-            }
-            else if (mExchangeList[type] < 0)
-            {
-                mExchangeList[type] = mExchangeList[type] + cycle_amount;
-            }
+            mExchangeList[type] = mExchangeList[type] - cycle_amount;
         }
-        return true;
+        else if (mExchangeList[type] < 0)
+        {
+            mExchangeList[type] = mExchangeList[type] + cycle_amount;
+        }
+
+        return false;
     }
 
     private void doExchange()
     {
+        //the exchange speed is too fast so only collect every nth cycle
+        if (mCycleCounter % mCyclesToSkip == 0)
+        {
+            if (mCycleCounter == mCyclesToSkip)
+                mCycleCounter = 1;
+            else
+                mCycleCounter++;
+            return;
+        }
         //Debug.Log("doing the exchange");
         //Debug.Log("in do exchange size of the exchange list is "+mExchangeList.Count.ToString());
         mDoneType = GameTypes.ItemType.Unknown;
@@ -203,7 +231,7 @@ public class Exchange : Action
             //negative amount, move items from target to acter
             else if (ival < 0)
             {
-                Debug.Log("negative value");
+                //Debug.Log("negative value");
                 if (checkAndExchangeItems(mTarget, mActer, itype, cycle_amount) == false)
                     continue;
                 else

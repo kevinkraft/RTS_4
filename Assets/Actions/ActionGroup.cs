@@ -30,6 +30,15 @@ public class ActionGroup : MonoBehaviour
         mActions.Add(act);
         act.transform.SetParent(this.transform);
     }
+    public bool hasActionOfType(string act_name)
+    {
+        foreach (Action act in mActions )
+        {
+            if (act.mName == act_name)
+                return true;
+        }
+        return false;
+    }
     public void prependAction(Action act)
     {
         if (mActions.Count >= 1)

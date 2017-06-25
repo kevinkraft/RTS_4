@@ -75,6 +75,10 @@ artifacts/
 #*.cs.meta
 #*.prefab.meta
 Library/
+Temp/
+.gitattributes
+Assets/ExternalAssets/
+Assets/ExternalAssets.meta
 
 # Chutzpah Test files
 _Chutzpah*

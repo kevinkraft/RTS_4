@@ -69,7 +69,8 @@ public class PopMenu : Menu
         //clear any old buttons
         clearButtons();
         //how many available actions?
-        List<string> titles = new List<string>();
+        List<string> titles = getAvailableActionStrings();
+        /*List<string> titles = new List<string>();
         EntityHP ent_hp = (EntityHP) mHitObject;
         if (ent_hp)
         {
@@ -80,7 +81,7 @@ public class PopMenu : Menu
             titles.Add("Move");
         EntityAction ent_act = (EntityAction) mHitObject;
         if (ent_act)
-            titles.Add("Exchange");
+            titles.Add("Exchange");*/
         //calculate dimensional properties
         int nbs = titles.Count;
         float bh = (nbs * mButtonHeight - (nbs + 1) * mButtonBorder) / nbs;
@@ -123,10 +124,15 @@ public class PopMenu : Menu
     }
     public void setOutcome(string oname)
     {
-        mOutcomeAction = new Action();
-        EntityHP ent_hp = (EntityHP)mHitObject;
-        EntityAction ent_act = (EntityAction)mHitObject;
-        Entity ent = (Entity)mHitObject;
+        //mOutcomeAction = new Action();
+        //EntityHP ent_hp = (EntityHP)mHitObject;
+        EntityHP ent_hp = mHitObject as EntityHP;
+        //EntityAction ent_act = (EntityAction)mHitObject;
+        EntityAction ent_act = mHitObject as EntityAction;
+        //Entity ent = (Entity)mHitObject;
+        Entity ent = mHitObject as Entity;
+        Resource res = mHitObject as Resource;
+        Building build = mHitObject as Building;
         switch (oname)
         {
             case "Move":
@@ -137,6 +143,14 @@ public class PopMenu : Menu
                 else if (mHitPoint != Globals.InvalidPosition)
                     move.setDestination(mHitPoint);
                 mOutcomeAction = move;
+                break;
+            case "Wait":
+                Wait wt = ObjectManager.initWait(mSelection.transform);
+                if (ent)
+                    wt.setDestination(ent);
+                else if (mHitPoint != Globals.InvalidPosition)
+                    wt.setDestination(mHitPoint);
+                mOutcomeAction = wt;
                 break;
             case "Attack":
                 //Debug.Log(string.Format("Action keyword Attack chosen.", oname));
@@ -163,6 +177,42 @@ public class PopMenu : Menu
                     mOutcome = false;
                 setActive(false);
                 return;
+            case "Garrison":
+                Garrison gar = ObjectManager.initGarrison(mSelection.transform);
+                if (build)
+                {
+                    gar.setTarget(build);
+                    mOutcomeAction = gar;
+                    break;
+                }
+                else
+                    mOutcome = false;
+                setActive(false);
+                return;
+            case "Procreate":
+                Procreate proc = ObjectManager.initProcreate(mSelection.transform);
+                if (build)
+                {
+                    proc.setGarrisonBuilding(build);
+                    mOutcomeAction = proc;
+                    break;
+                }
+                else
+                    mOutcome = false;
+                setActive(false);
+                return;
+            case "Collect":
+                Collect coll = ObjectManager.initCollect(mSelection.transform);
+                if (res)
+                {
+                    coll.setTarget(res);
+                    mOutcomeAction = coll;
+                    break;
+                }
+                else
+                    mOutcome = false;
+                setActive(false);
+                return;
             default:
                 Debug.LogError(string.Format("Action keyword {0} not recoginised.",oname));
                 break;
@@ -182,6 +232,40 @@ public class PopMenu : Menu
         foreach (Button b in mButtons)
             Destroy(b.gameObject);
         mButtons.Clear();
+    }
+    private List<string> getAvailableActionStrings()
+    {
+        //returns a list of strings which are the names of available actions
+        List<string> titles = new List<string>();
+        Entity ent = mHitObject as Entity;
+        if (ent)
+        {
+            titles.Add("Move");
+            titles.Add("Wait");
+        }
+        else if (mHitPoint != Globals.InvalidPosition)
+        {
+            titles.Add("Move");
+            titles.Add("Wait");
+        }
+        EntityHP ent_hp = mHitObject as EntityHP;
+        if (ent_hp)
+            titles.Add("Attack");
+        EntityAction ent_act= mHitObject as EntityAction;
+        if (ent_act)
+            titles.Add("Exchange");
+        Building build = mHitObject as Building;
+        if (build)
+        {
+            titles.Add("Garrison");
+            titles.Add("Procreate");
+        }
+        Resource res = mHitObject as Resource;
+        if (res)
+            titles.Add("Collect");
+
+
+        return titles;
     }
     private void setButtonAnchorPivots(Button b)
     {
