@@ -33,6 +33,6 @@ The controls take a bit of getting used to because some of the actions are conti
 
 Issues
 ---------
-
+* I haven't implemented the Work action fully. When a Unit is working a Farm, food is produced but the Unit never brings it to the stockpile. If you are relying on Food produced in a Farm, you need to move the food from the Farms to the stockpile by hand. This will be implemented in the next release.
 * When multiple Units are Constructing a Building some of the Units often get stuck Exchanging Items at the stockpile. The fix is probably simple.
 * Garrisoned Units or Procreating Units that get hungry and leave their Garrison to get food at the stockpile often collide with the stockpile model instead of moving beside it. Also the Procreate Action gets cancelled and their Action queue gets cleared, the Units are supposed to return to the Action they were doing before they went to Eat.
