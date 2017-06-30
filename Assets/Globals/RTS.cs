@@ -23,17 +23,34 @@ namespace RTS
         public static float POP_MENU_BUTTON_HEIGHT { get { return 35; } }
         public static float POP_MENU_WIDTH { get { return 80; } }
         public static float POP_MENU_BUTTON_BORDER { get { return 5; } }
+        public static float POP_MENU_LIST_WIDTH { get { return 100f; } }
 
         //units
         public static float UNIT_PREGNANCY_CYCLE_PROGRESS { get { return 0.05f; } }
         //public static float UNIT_HUNGER_CYCLE_INCREASE { get { return 0.001f; } } //too low
-        public static float UNIT_HUNGER_CYCLE_INCREASE { get { return 0.01f; } } //this is a good value with hunger_value = 10f
+        public static float UNIT_HUNGER_CYCLE_INCREASE { get { return 0.01f; } } //this is a good value with hunger_value = 10f, default
         //public static float UNIT_HUNGER_CYCLE_INCREASE { get { return 0.05f; } } //for testing
         //public static float UNIT_HUNGER_CYCLE_INCREASE { get { return 0.1f; } } //for testing
-        public static float UNIT_HUNGRY_DAMAGE_TAKEN { get { return 0.05f; } }
+        public static float UNIT_HUNGRY_DAMAGE_TAKEN { get { return 0.05f; } } // default
         //public static float UNIT_HUNGRY_DAMAGE_TAKEN { get { return 0.1f; } } //for testing
         //the value of 1 Food in terms of unit hunger
         public static float UNIT_FOOD_HUNGER_VALUE { get { return 10f; } } 
+
+        //Materials needed for Construction types
+        public static Dictionary<GameTypes.ItemType, float> MAINHUT_CONSTRUCTION_MATERIALS { get { return new Dictionary<GameTypes.ItemType, float>()
+        {
+            {GameTypes.ItemType.Wood, 50}
+        }; } } //default =50
+        public static Dictionary<GameTypes.ItemType, float> STOCKPILE_CONSTRUCTION_MATERIALS { get { return new Dictionary<GameTypes.ItemType, float>()
+        {
+            {GameTypes.ItemType.Wood, 100} //default=100
+        }; }}
+        public static Dictionary<GameTypes.ItemType, float> FARM_CONSTRUCTION_MATERIALS { get { return new Dictionary<GameTypes.ItemType, float>()
+        {
+            {GameTypes.ItemType.Wood, 30} //default=30
+        }; }}
+
+
 
     }
 
@@ -80,6 +97,17 @@ namespace RTS
         {
             return mGameObjectList.getUnit(unit_name);
         }
+        public static GameObject getBuilding(string b_name)
+        {
+            GameObject go = mGameObjectList.getBuilding(b_name);
+            if (!go)
+                Debug.LogError(string.Format("Building name {0} not found", b_name));
+            return go;
+        }
+        public static GameObject getConstruction(string c_name)
+        {
+            return mGameObjectList.getConstruction(c_name);
+        }
 
         //init action functions
         public static Attack initAttack(Transform parent)
@@ -117,10 +145,20 @@ namespace RTS
             Collect coll = GameObject.Instantiate(getAction("Collect"), parent).GetComponent<Collect>();
             return coll;
         }
+        public static Construct initConstruct(Transform parent)
+        {
+            Construct constr = GameObject.Instantiate(getAction("Construct"), parent).GetComponent<Construct>();
+            return constr;
+        }
         public static   Eat initEat(Transform parent)
         {
             Eat eat = GameObject.Instantiate(getAction("Eat"), parent).GetComponent<Eat>();
             return eat;
+        }
+        public static Work initWork(Transform parent)
+        {
+            Work wr = GameObject.Instantiate(getAction("Work"), parent).GetComponent<Work>();
+            return wr;
         }
 
         //init item function
@@ -139,9 +177,30 @@ namespace RTS
             Unit unit = GameObject.Instantiate(getUnit("Unit"), town.gameObject.transform).GetComponent<Unit>();
             unit.mGender = gender;
             unit.gameObject.transform.position = pos;
-            //town.addEntity("units", unit);
+            town.addEntity("units", unit);
             return unit;
         }
+        
+        //init building functions
+        public static Building initBuilding(Vector3 pos, GameTypes.BuildingType bt, Town town)
+        {
+            Building b = GameObject.Instantiate(getBuilding(bt.ToString()), town.gameObject.transform).GetComponent<Building>();
+            b.gameObject.transform.position = pos;
+            b.mType = bt;
+            town.addEntity("buildings", b);
+            return b;
+        }
+
+        //init Construction function
+        public static Construction initConstruction(Vector3 pos, GameTypes.BuildingType bt, Town town)
+        {
+            Construction constro = GameObject.Instantiate(getConstruction("Construction"), town.gameObject.transform).GetComponent<Construction>();
+            constro.gameObject.transform.position = pos;
+            constro.mType = bt;
+            town.addEntity("constructions", constro);
+            return constro;
+        }
+
 
     }
 
@@ -152,7 +211,7 @@ namespace RTS
         public enum ItemType { Unknown, Food, Wood };
 
         //unknown must be first
-        public enum BuildingType { Unknown, MainHut, Stockpile };
+        public enum BuildingType { Unknown, MainHut, Stockpile, Farm };
 
         //unknown must be first
         public enum GenderTypes { Unknown, Male, Female };

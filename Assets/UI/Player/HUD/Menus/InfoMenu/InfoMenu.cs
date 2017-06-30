@@ -45,7 +45,14 @@ public class InfoMenu : Menu
             text += string.Format("HP: {0:0} \n", ent_hp.mHP);
         EntityAction ent_act = ent as EntityAction;
         if (ent_act)
+        { 
             text += string.Format("InvCap.: {0:0} \n", ent_act.getInventory().mCapacity);
+            if (ent_act.mTown)
+            {
+                text += string.Format("Town: {0}\n", ent_act.mTown.mName);
+                text += string.Format("StockPile: {0}\n", ent_act.mTown.mStockpile.mName);
+            }
+        }
         Resource res = ent as Resource;
         if (res)
             text += string.Format("Amount: {0:0} \n", res.mAmount);
@@ -80,6 +87,17 @@ public class InfoMenu : Menu
                 //make the ungarrisonall button
                 setupBuildingUngarrisonButton(build, mButton1);
             }
+        }
+        Construction constro = ent as Construction;
+        if (constro)
+        {
+            text += constro.printMaterialsMap();
+            text += string.Format("Progress: {0:0}", constro.getProgress());
+        }
+        WorkedBuilding wb = ent as WorkedBuilding;
+        if (wb)
+        {
+            text += string.Format("Progress: {0:0}", wb.displayProgress());
         }
         mText.text = text;
     }

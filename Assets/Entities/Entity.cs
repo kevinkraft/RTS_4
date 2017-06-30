@@ -53,9 +53,33 @@ using UnityEngine;
 // * Eat Action
 //   * bas action(done)
 //   * need to implement Region, for checking available food
+//   * If there is no food in the stockpile the units can do anything as the Eat action is stuck at the top
+//     * Need to implement region and Resource list
 // * Wait action(done)
 //   * Unit goes to a location and goes back there unless its Action queue is cleared(done)
 //   * Can be used to make units stay where you want them to(done)
+// * Construct Action(done)
+//   * Town probably needs a list of Constructions also(no need for now)
+//   * Need to implement Construction class which inherits from EntityAction(done)
+//     * Will have a Dict of item type and amount needed(done)
+//     * Will have a progress float(done)
+//     * when complete it will replace itself with a building(done)
+//   * Need to implement the Construct action(done)
+//     * There are two forms(done)
+//       * if you click on a preexisting construction the unit helps build it(done)
+//       * If you click on open ground you can start a Construction there(done)
+//         * Need a menu to open that allows you to choose what building you want to build(ok)
+//           * this can be like a popmenu or in the sidebar(done)
+//             * Maybe it can be a function of the pop menu?(yes)
+//             * It will be a box with a dropdown list of available buildings(done)
+//   * I should implement a "getResource" function for a unit which automatically makes them go and find items(done)
+//     * This can also be used for Eat action(done)
+//     * Place it in the Unit script(done)
+// * Farm
+//   * A building that produces Food
+//     * Need to make a child class of Building for WorkedBuildings
+//       * A WorkedBuilding needs no items, just a Unit to work it and increase its progress bar to produce food
+//     * Also need a Work action
 // * Message Bar
 //   * A UI device which gives the user useful info
 //     * Tell user:
@@ -64,10 +88,25 @@ using UnityEngine;
 //       * When the stockpile is full
 // * A clear button in the ActionMenu to wipe all actions
 //   * I can see it being quite handy
+// * Ledger
+//   * A menu with info about everything
+//   * It will have multiple tabs
+//     * Make a multitab menu, dont change the already existing TabMenu
+//   * It will have tabs for Nation, Region(Province?), Towns, etc. everything.
+// * Idle unit button
+//   * put it on the side bar
+//   * it makes idle units go to the Town main building.
+
 
 //Problems
+// * When constructing, Unit get stuck at the stockpile, removng and adding an item to their inventories
+//   * Its something to do with the Construction no longer needing any items
+// * The PopMenu doesnt appear properly when you first right click(fixed)
+//   * Its fine after the first time(fixed)
+//   * The problem was with setting the gameObject to false at Start(ok)
 // * Sometimes the OK button in the ExchangeMenu gets stuck and does nothing
 //   * I've reproduced the problem twice but not sure how I reproduced it.
+//   * Something to do with switching the selected entity, or clicking out of the ExchangeMenu before its finished
 // * The units dont get very close to the resources when you tell them to move to them(fixed)
 //   * problem with Entity.pointOfTouchingBounds(fixed)
 //     * need a better way of telling them where to go so that they dont collide(fixed)

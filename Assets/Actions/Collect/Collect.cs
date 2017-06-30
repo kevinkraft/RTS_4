@@ -157,7 +157,9 @@ public class Collect : Action
             //so dump the inventory
             //Debug.Log("No item of type, the inventory must already be full. Dumping inventory");
             mActer.dumpInventory();
+            return;
         }
+        Debug.Log(mActer.mName);
         mActer.exchangeWith( mActer.getStockpile(), mTarget.mType, item.mAmount);
     }
 

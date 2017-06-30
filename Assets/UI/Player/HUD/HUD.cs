@@ -29,7 +29,7 @@ public class HUD : MonoBehaviour
         mPopMenu = GetComponentInChildren<PopMenu>();
         if (!mPopMenu)
             Debug.LogError("Can't find PopMenu in HUD");
-        mPopMenu.gameObject.SetActive(false);
+        //mPopMenu.gameObject.SetActive(false);
         mExchangeMenu = GetComponentInChildren<ExchangeMenu>();
         if (!mExchangeMenu)
             Debug.LogError("Can't find ExchangeMenu in HUD");
@@ -52,7 +52,8 @@ public class HUD : MonoBehaviour
     {
         //clear the hud of parts relating to the selected entity
         mSideBar.clearSelection();
-        mPopMenu.setActive(false);
+        if (mPopMenu.isActive())
+            mPopMenu.setActive(false);  
     }
   
     public void drawSelectionBox(Entity ent)
@@ -92,7 +93,7 @@ public class HUD : MonoBehaviour
         {
             //populate the menu
             mPopMenu.populate(sel_act, ent, hitPoint);
-            mPopMenu.gameObject.SetActive(true);
+            //mPopMenu.gameObject.SetActive(true);
         }
 
     }

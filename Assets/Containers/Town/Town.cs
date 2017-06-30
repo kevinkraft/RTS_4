@@ -64,6 +64,13 @@ public class Town : EntityContainer
 
     }
 
+    private void Update()
+    {
+        base.Update();
+        //Debug.Log(string.Format("{0}", mGroupMap["units"].Count));
+
+    }
+
     //-------------------------------------------------------------------------------------------------
     // public methods
     //-------------------------------------------------------------------------------------------------

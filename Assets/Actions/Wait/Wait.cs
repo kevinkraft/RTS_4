@@ -49,7 +49,7 @@ public class Wait : Movement
     //-------------------------------------------------------------------------------------------------
     protected override void MakeMove()
     {
-        Debug.Log("in wait make move");
+        //Debug.Log("in wait make move");
         mActer.transform.position = Vector3.MoveTowards(mActer.transform.position, mDestination, Time.deltaTime * mActer.getMoveSpeed());
         if (mActer.transform.position == mDestination)
         {
@@ -63,7 +63,7 @@ public class Wait : Movement
 
     private void setComplete()
     {
-        Debug.Log("in wait set complete");
+        //Debug.Log("in wait set complete");
         return;
     }
 

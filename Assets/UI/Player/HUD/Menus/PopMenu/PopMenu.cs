@@ -4,23 +4,36 @@ using UnityEngine;
 using UnityEngine.UI;
 using RTS;
 
+//class for the menu that appears at the click position for selection actions
+
+//Notes:
+// * All the actions are instantiate here after they are chosen
+// * Also has a feature for selecting from a list of objects, namely building type 
+//   to construct
+
 public class PopMenu : Menu
 {
     //public members
     public bool mOutcome;
+    public string mOutcomeString;
+    public Dropdown mListDropdown;
+    public Button mDefaultButton;
 
     //private members
-    private Button mDefaultButton;
     public List<Button> mButtons = new List<Button>();
     private Vector3 mHitPoint;
-    private float mButtonHeight;
+    private float mButtonHeight = Globals.POP_MENU_BUTTON_HEIGHT;
     private float mHeight;
-    private float mWidth;
+    private float mWidth = Globals.POP_MENU_WIDTH;
     private float mButtonBorder;
+    private float mListWidth;
     private bool mActive;
     private EntityAction mSelection;
     private Entity mHitObject;
     public Action mOutcomeAction;
+    private bool mListActive = false;
+    private List<string> mListOptStrings = new List<string>(); 
+    
 
     //-------------------------------------------------------------------------------------------------
     // unity methods
@@ -28,25 +41,36 @@ public class PopMenu : Menu
     void Awake()
     {
         //populate list of buttons with th eone button that is already instantiated
-        mDefaultButton = GetComponentInChildren<Button>();
+        //mDefaultButton = GetComponentInChildren<Button>();
         if (!mDefaultButton)
             Debug.Log("Can't find PopMenu default button.");
         mButtonHeight = Globals.POP_MENU_BUTTON_HEIGHT;
-        mWidth = Globals.POP_MENU_WIDTH;
         mButtonBorder = Globals.POP_MENU_BUTTON_BORDER;
+        mWidth = Globals.POP_MENU_WIDTH;
         mActive = false;
         mOutcome = false;
+    }
+    private void Start()
+    {
+        base.Start();
+        mWidth = Globals.POP_MENU_WIDTH;
+        mListWidth = Globals.POP_MENU_LIST_WIDTH;
     }
     private void OnGUI()
     {
         //update the postion of the menu on the screen using the hitpoint
         if (mActive)
-            setScreenPosition();
+        //{
+        //    if (mBuildListActive)
+        //        setBuildListPosition();
+        //    else
+                setScreenPosition();
+        //}
     }
     void Update()
     {
-        if (!mActive)
-            clear();
+        //if (!mActive)
+        //    clear();
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -56,10 +80,50 @@ public class PopMenu : Menu
     {
         return mActive;
     }
-    public void populate(EntityAction selection, Entity hit_ent, Vector3 hitPoint)
-        /*Get number of actions avaialble. Make the button for each action and set 
-        the positions and sizes correctly*/
+    public void listOutcome()
     {
+        Debug.Log("List has outcome");
+        //get the chosen string
+        int index = mListDropdown.value;
+        if (index == 0)
+            return;
+        string choice = mListOptStrings[index];
+        switch (choice)
+        {
+            case "":
+                setActive(false);
+                return;
+            case "Cancel":
+                setActive(false);
+                return;
+            default:
+                break;
+        }
+        //get the type from the string
+        GameTypes.BuildingType type = (GameTypes.BuildingType)System.Enum.Parse(typeof(GameTypes.BuildingType), choice);
+        if (type == 0)
+            Debug.LogError(string.Format("Choice type {0} not recognised", choice));
+        //make the new action and anything it needs
+        switch (mOutcomeString)
+        {
+            case "Construct":
+                Construction c = ObjectManager.initConstruction(mHitPoint, type, mSelection.mTown);
+                Construct constr = ObjectManager.initConstruct(mSelection.transform);
+                constr.setTarget(c);
+                mOutcomeAction = constr;
+                break;
+            default:
+                Debug.LogError("Action choice not recognised");
+                break;
+        }
+        //mListDropdown.RefreshShownValue();
+        mOutcome = true;
+    }
+    public void populate(EntityAction selection, Entity hit_ent, Vector3 hitPoint)
+    /*Get number of actions avaialble. Make the button for each action and set 
+    the positions and sizes correctly*/
+    {
+        //Debug.Log(string.Format("width: {0}", mWidth));
         //set members
         mHitPoint = hitPoint;
         mHitObject = hit_ent;
@@ -70,18 +134,6 @@ public class PopMenu : Menu
         clearButtons();
         //how many available actions?
         List<string> titles = getAvailableActionStrings();
-        /*List<string> titles = new List<string>();
-        EntityHP ent_hp = (EntityHP) mHitObject;
-        if (ent_hp)
-        {
-            titles.Add("Move");
-            titles.Add("Attack");
-        }
-        else if (hitPoint != Globals.InvalidPosition)
-            titles.Add("Move");
-        EntityAction ent_act = (EntityAction) mHitObject;
-        if (ent_act)
-            titles.Add("Exchange");*/
         //calculate dimensional properties
         int nbs = titles.Count;
         float bh = (nbs * mButtonHeight - (nbs + 1) * mButtonBorder) / nbs;
@@ -109,6 +161,28 @@ public class PopMenu : Menu
         //set the menu position
         setScreenPosition();
     }
+    public void populateListMenu()
+    {
+        //clear the popmenu (it doesnt clear the mOutcomeString)
+        clearDropdownList();
+        //turn on the relevant bools
+        mListActive = true;
+        mOutcome = false;
+        //make the dropdown choices, for now it only BuildingTypes
+        mListOptStrings = new List<string>() { "","Cancel" };
+        foreach (GameTypes.BuildingType bt in System.Enum.GetValues(typeof(GameTypes.BuildingType)))
+        {
+            if (bt != GameTypes.BuildingType.Unknown )
+                mListOptStrings.Add(bt.ToString());
+        }
+        mListDropdown.AddOptions(mListOptStrings);
+        mListDropdown.value = 0; //must be after AddOptions
+        RectTransform rt = (RectTransform)mListDropdown.transform;
+        rt.sizeDelta = new Vector2(mListWidth-2*mButtonBorder, rt.sizeDelta.y);
+        clearButtons();
+        setScreenPosition();
+    }
+
     public void setActive(bool b)
     {
         if (b)
@@ -133,11 +207,14 @@ public class PopMenu : Menu
         Entity ent = mHitObject as Entity;
         Resource res = mHitObject as Resource;
         Building build = mHitObject as Building;
+        Construction constro = mHitObject as Construction;
+        WorkedBuilding wb = mHitObject as WorkedBuilding;
+        mOutcomeString = oname;
         switch (oname)
         {
             case "Move":
                 //Debug.Log(string.Format("Action keyword Move chosen", oname));
-                Movement move= ObjectManager.initMove(mSelection.transform);
+                Movement move = ObjectManager.initMove(mSelection.transform);
                 if (ent)
                     move.setDestination(ent);
                 else if (mHitPoint != Globals.InvalidPosition)
@@ -163,8 +240,8 @@ public class PopMenu : Menu
                 }
                 else
                     mOutcome = false;
-                    setActive(false);
-                    return;
+                setActive(false);
+                return;
             case "Exchange":
                 Exchange ex = ObjectManager.initExchange(mSelection.transform);
                 if (ent_act)
@@ -213,25 +290,70 @@ public class PopMenu : Menu
                     mOutcome = false;
                 setActive(false);
                 return;
+            case "Work":
+                Work wr = ObjectManager.initWork(mSelection.transform);
+                if (wr)
+                {
+                    wr.setTarget(wb);
+                    mOutcomeAction = wr;
+                    break;
+                }
+                else
+                    mOutcome = false;
+                setActive(false);
+                return;
+            case "Construct":
+                if (constro)
+                {
+                    Construct constr = ObjectManager.initConstruct(mSelection.transform);
+                    constr.setTarget(constro);
+                    mOutcomeAction = constr;
+                }
+                else if (mHitPoint != Globals.InvalidPosition)
+                {
+                    populateListMenu();
+                    //constr.setTarget(mHitPoint);
+                }
+                else
+                {
+                    mOutcome = false;
+                    setActive(false);
+                    return;
+                }
+                
+                break;
             default:
                 Debug.LogError(string.Format("Action keyword {0} not recoginised.",oname));
                 break;
         }
-        mOutcome = true;
+        if (!mListActive)
+            mOutcome = true;
     }
 
     //-------------------------------------------------------------------------------------------------
     // private methods
     //-------------------------------------------------------------------------------------------------
+
     private void clear()
     {
         clearButtons();
+        clearDropdownList();
     }
+
     private void clearButtons()
     {
         foreach (Button b in mButtons)
             Destroy(b.gameObject);
         mButtons.Clear();
+    }
+    private void clearDropdownList()
+    {
+        //clears the dropdown list
+        //Debug.Log("clearing the list menu");
+        mListDropdown.ClearOptions();
+        mListActive = false;
+        RectTransform rt = (RectTransform)mListDropdown.transform;
+        rt.sizeDelta = new Vector2(0, rt.sizeDelta.y);
     }
     private List<string> getAvailableActionStrings()
     {
@@ -247,6 +369,7 @@ public class PopMenu : Menu
         {
             titles.Add("Move");
             titles.Add("Wait");
+            titles.Add("Construct");
         }
         EntityHP ent_hp = mHitObject as EntityHP;
         if (ent_hp)
@@ -263,6 +386,12 @@ public class PopMenu : Menu
         Resource res = mHitObject as Resource;
         if (res)
             titles.Add("Collect");
+        WorkedBuilding wb= mHitObject as WorkedBuilding;
+        if (wb)
+            titles.Add("Work");
+        Construction constr = mHitObject as Construction;
+        if (constr)
+            titles.Add("Construct");
 
 
         return titles;
@@ -279,7 +408,12 @@ public class PopMenu : Menu
     {
         //sets the screen position of the menu using the hitpoint
         Vector3 screenpos = Camera.main.WorldToScreenPoint(mHitPoint);
-        setPositions(screenpos.x,screenpos.y, mWidth, mHeight);
+        if (!mListActive)
+        {
+            setPositions(screenpos.x, screenpos.y, mWidth, mHeight);
+        }
+        else
+            setPositions(screenpos.x, screenpos.y, mListWidth, mButtonHeight + mButtonBorder);
     }
 
 }

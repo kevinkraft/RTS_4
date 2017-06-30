@@ -1597,12 +1597,12 @@ Transform:
   m_LocalPosition: {x: 13.92, y: 0, z: 4.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4583723086405934}
   - {fileID: 4513021925819402}
   - {fileID: 4816010033564232}
   - {fileID: 4322331020596828}
+  - {fileID: 4583723086405934}
   m_Father: {fileID: 4781588040973320}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4092861741584860
 Transform:
@@ -1759,7 +1759,7 @@ Transform:
   - {fileID: 4683163208706198}
   - {fileID: 4492631122751980}
   m_Father: {fileID: 4781588040973320}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4200933999797170
 Transform:
@@ -1813,7 +1813,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4060170518416170}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4338328916306904
 Transform:
@@ -1850,7 +1850,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1386809452347318}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 30, y: 0, z: -10}
+  m_LocalPosition: {x: 30, y: 0, z: -20.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4092861741584860}
@@ -1858,7 +1858,7 @@ Transform:
   - {fileID: 4365039650910882}
   - {fileID: 4180589656624222}
   m_Father: {fileID: 4781588040973320}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4365039650910882
 Transform:
@@ -2007,7 +2007,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4060170518416170}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4583723086405934
 Transform:
@@ -2015,7 +2015,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1482932103908572}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2024,7 +2024,7 @@ Transform:
   - {fileID: 4779859739806032}
   - {fileID: 4795840085312704}
   m_Father: {fileID: 4060170518416170}
-  m_RootOrder: 0
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4586304678808366
 Transform:
@@ -2255,9 +2255,9 @@ Transform:
   m_Children:
   - {fileID: 4492814732753732}
   - {fileID: 4125791079674414}
+  - {fileID: 4198763737301076}
   - {fileID: 4349729018924510}
   - {fileID: 4060170518416170}
-  - {fileID: 4198763737301076}
   m_Father: {fileID: 4347029034822132}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2319,7 +2319,7 @@ Transform:
   - {fileID: 4097333108403172}
   - {fileID: 4796643833189674}
   m_Father: {fileID: 4060170518416170}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4828295467160106
 Transform:
@@ -3612,9 +3612,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a76b4d3a9fc61fb4b99eae090719eaaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mName: Food
-  mType: 1
-  mAmount: 5
+  mName: Wood
+  mType: 2
+  mAmount: 10
 --- !u!114 &114080839094716716
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3844,7 +3844,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mName: Wood
   mType: 2
-  mAmount: 1
+  mAmount: 50
 --- !u!114 &114281502883412066
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4355,7 +4355,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mName: Food
   mType: 1
-  mAmount: 98
+  mAmount: 100
 --- !u!114 &114639703023575760
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4562,6 +4562,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mName: Town1
   mStockpile: {fileID: 114682362085747586}
+  mMainBuilding: {fileID: 0}
 --- !u!114 &114687097455539628
 MonoBehaviour:
   m_ObjectHideFlags: 1

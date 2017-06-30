@@ -67,7 +67,7 @@ public class Movement : Action
     }
     public override void setComplete(bool b)
     {
-        Debug.Log("in move set complete");
+        //Debug.Log("in move set complete");
         mComplete = b;
     }
     public void setDestination(Entity ent)

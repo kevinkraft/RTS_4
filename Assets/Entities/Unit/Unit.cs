@@ -22,6 +22,7 @@ public class Unit : EntityAction
     public float mRotateSpeed;
     public float mProcreateChance;
     public GameTypes.GenderTypes mGender;
+    public float mConstructSpeed = 50f; //default=1
 
     //private members
     //private float mSpeed = UNIT_SPEED;
@@ -45,7 +46,6 @@ public class Unit : EntityAction
         updatePregnancy();
         updateHunger();
     }
-
 
     //-------------------------------------------------------------------------------------------------
     // public methods
@@ -101,6 +101,51 @@ public class Unit : EntityAction
     public float getPregnancyProgress()
     {
         return mPregnancyProgress;
+    }
+    public bool getResource(GameTypes.ItemType type, float amount=-1f)
+    {
+        //tells the unit to get some of a resource. Chceks the unit inventory, if the
+        //unit has none of the item it checks the stockpile and tells them to get the item from there
+        //if theres none in the stockpile it tells them to go and find the resource.
+        //amount set to -1 means fill the inventory
+        //TO DO: Implement Region so that the Units have access to the list of Resources in the Region
+        //through their town
+
+        //what amount do we need?
+        float invcap = getInventory().mCapacity;
+        float invsize = getInventorySize();
+        if (amount == -1 || invcap < invsize + amount)
+            amount = invcap - invsize;
+        
+        //check the inventory and do nothing if the unit has the item
+        Item item = getItemOfType(type);
+        if (item)
+        {
+            //unit has it, do nothing;
+            return true;
+        }
+        //does the stockpile have some
+        Building sp = getStockpile();
+        item = sp.getItemOfType(type);
+        if (item)
+        {
+            //is the inventory full
+            if (isInventoryFull())
+            {
+                //is the stockpile full
+                if (sp.isInventoryFull())
+                    dropInventory();
+                else
+                    dumpInventory();
+            }
+            //stockpile has it, send Unit to get it
+            exchangeWith(sp, type, -1*amount);
+            return false;
+        }
+        //stockpile doesn't have it
+        //DO NOTHING FOR NOW
+        Debug.Log("Need to implement Region so that units know where to find Resources to Collect");
+        return false;
     }
     public float getRotateSpeed()
     {

@@ -14,6 +14,8 @@ public class GameObjectList : MonoBehaviour
     public List<GameObject> mMenus;
     public List<GameObject> mResources;
     public List<GameObject> mUnits;
+    public List<GameObject> mBuildings;
+    public List<GameObject> mConstructions;
     //public GameObject player;
 
     //private members
@@ -32,6 +34,8 @@ public class GameObjectList : MonoBehaviour
             mMenus = getMenuComponentObjects();
             mResources = getResourceComponentObjects();
             mUnits = getUnitComponentObjects();
+            mBuildings = getBuildingComponentObjects();
+            mConstructions = getConstructionComponentObjects();
             ObjectManager.setGameObjectList(this);
             created = true;
         }
@@ -98,6 +102,24 @@ public class GameObjectList : MonoBehaviour
         {
             Unit unit = mUnits[i].GetComponent<Unit>();
             if (unit && unit.mName == unit_name) return mUnits[i];
+        }
+        return null;
+    }
+    public GameObject getBuilding(string b_name)
+    {
+        for (int i = 0; i < mBuildings.Count; i++)
+        {
+            Building b = mBuildings[i].GetComponent<Building>();
+            if (b && b.mName == b_name) return mBuildings[i];
+        }
+        return null;
+    }
+    public GameObject getConstruction(string c_name)
+    {
+        for (int i = 0; i < mConstructions.Count; i++)
+        {
+            Construction c = mConstructions[i].GetComponent<Construction>();
+            if (c && c.mName == c_name) return mConstructions[i];
         }
         return null;
     }
@@ -176,6 +198,33 @@ public class GameObjectList : MonoBehaviour
         }
         return unit_objects;
     }
+    private List<GameObject> getBuildingComponentObjects()
+    {
+        //returns a list of child game objects which contain a Building script component 
+        //this allows to just drop the Building prefabs as children in GameObjectList/Buildings
+        List<GameObject> b_objects = new List<GameObject>();
+        Component[] child_objects = this.GetComponentsInChildren<Transform>();
+        foreach (Component cobj in child_objects)
+        {
+            if (cobj.gameObject.GetComponent<Building>() != null)
+                b_objects.Add(cobj.gameObject);
+        }
+        return b_objects;
+    }
+    private List<GameObject> getConstructionComponentObjects()
+    {
+        //returns a list of child game objects which contain a Construction script component 
+        //this allows to just drop the Construction prefabs as children in GameObjectList/Constructions
+        List<GameObject> c_objects = new List<GameObject>();
+        Component[] child_objects = this.GetComponentsInChildren<Transform>();
+        foreach (Component cobj in child_objects)
+        {
+            if (cobj.gameObject.GetComponent<Construction>() != null)
+                c_objects.Add(cobj.gameObject);
+        }
+        return c_objects;
+    }
+
 
 
 

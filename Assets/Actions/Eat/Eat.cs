@@ -38,7 +38,7 @@ public class Eat : Action
     {
         //is the units hunger almost zero? Then stop
         isFinished();
-        //does the unit have food in its inventory
+        /*//does the unit have food in its inventory
         Item item = mActer.getItemOfType(GameTypes.ItemType.Food);
         if ( item )
         {
@@ -72,7 +72,17 @@ public class Eat : Action
         else
         {
             Debug.Log("Stockpile has no food, Need to implement Region so that units can search for food sources.");
+        }*/
+
+        if ( mActer.getResource(GameTypes.ItemType.Food,5f) )
+        {
+            //unit has some food
+            Debug.Log("unit has some food");
+            doEat();
+            return;
         }
+
+
     }
 
     //-------------------------------------------------------------------------------------------------

@@ -9,8 +9,8 @@ public class Building : EntityAction
     //public members
     public GameTypes.BuildingType mType = GameTypes.BuildingType.Unknown;
 
-    //private
-    private UnitInventory mUnitInventory;
+    //protected members
+    protected UnitInventory mUnitInventory;
 
     //-------------------------------------------------------------------------------------------------
     // unity methods
@@ -101,7 +101,7 @@ public class Building : EntityAction
                 Debug.LogError("Unknown Building type");
                 break;
             case GameTypes.BuildingType.MainHut:
-                getInventory().mCapacity = 100;
+                getInventory().mCapacity = 200;
                 mUnitInventory.mCapacity = 10;
                 break;
             case GameTypes.BuildingType.Stockpile:
@@ -109,7 +109,9 @@ public class Building : EntityAction
                 mUnitInventory.mCapacity = 2;
                 break;
             default:
-                Debug.LogError("Building type not recognised");
+                WorkedBuilding wb = (WorkedBuilding)this;
+                if (!wb)
+                    Debug.LogError("Building type not recognised");
                 break;
 
         }
