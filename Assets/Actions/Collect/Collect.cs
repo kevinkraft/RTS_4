@@ -10,8 +10,6 @@ using RTS;
 // * Unit collects items then returns to its Town stockpile
 
 //To Do:
-// * If the resource runs out the unit needs to find another
-// * need to implement Region for this, a container for Towns and Resources
 // * Maybe you should add something that make the unit dump their inventory if
 //   its already very full, because its a waste of time going back and forward to the
 //   stockpile if they cant carry much
@@ -22,12 +20,14 @@ public class Collect : Action
     //public members
     public Unit mActer;
     public Resource mTarget;
+    public GameTypes.ItemType mType;
 
     ////private members
     //privtae bool mReturnToStockpile = false;
     //private bool mCollectedOnPreviousCycle = false;
     private int mCyclesToSkip = 3;
     private int mCycleCounter = 0;
+    private bool mOneRound = false; //if true the unit will stop when its inventory is full
 
     //-------------------------------------------------------------------------------------------------
     // unity methods
@@ -58,9 +58,18 @@ public class Collect : Action
         //is the resource empty (i.e. dead)?
         if (!mTarget)
         {
-            //Debug.Log("target is null, it must be empty/dead.");
-            mComplete = true;
-            return;
+            //try to find another instance of this resource
+            Resource res = mActer.mTown.getRegion().getClosestResourceOfType(mType, mActer);
+            if (!res)
+            {
+                //no other resources
+                mComplete = true;
+                return;
+            }
+            else
+            {
+                mTarget = res;
+            }
         }
         //is target in range?
         float dist = Vector3.Distance(mActer.transform.position, mTarget.transform.position);
@@ -89,11 +98,16 @@ public class Collect : Action
     //-------------------------------------------------------------------------------------------------
     public override string print()
     {
-        return string.Format( "Collect: {0}", mTarget.mType.ToString() );
+        return string.Format( "Collect: {0}\n", mTarget.mType.ToString() );
+    }
+    public void setOneRound(bool b)
+    {
+        mOneRound = b;
     }
     public void setTarget(Resource target)
     {
         mTarget = target;
+        mType = mTarget.mType;
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -104,10 +118,25 @@ public class Collect : Action
         //if the units inventory is full, send it back to the stockpile
         if (mActer.isInventoryFull())
         {
-            //acters inventory is full, return to stockpile
+            //acters inventory is full, return to stockpile or stop
+            //check if the Unit contains some of the target type, if not, its inventory was probably full before
+            //starting the action, and if its only doing one round this will cause an infinite loop
             //Debug.Log("acters Inventory is full, returning to stockpile");
-            returnToStockpile();
-            return;
+            Item item = mActer.getItemOfType(mTarget.mType);
+            if (mOneRound && item)
+            {
+                mComplete = true;
+                return;
+            }
+            else if (mOneRound && !item)
+            {
+                mActer.dropOrDumpInventory();
+            }
+            else
+            {
+                mActer.returnToStockpile(mTarget.mType);
+                return;
+            }
         }
         float amount = mActer.mExchangeSpeed / 49f; //default exchange speed is too fast
         //cant collect 0.01 or less
@@ -148,7 +177,7 @@ public class Collect : Action
     {
         mActer = GetComponentInParent<Unit>();
     }
-    private void returnToStockpile()
+    /*private void returnToStockpile()
     {
         Item item = mActer.getItemOfType(mTarget.mType); 
         if (!item)
@@ -161,6 +190,6 @@ public class Collect : Action
         }
         Debug.Log(mActer.mName);
         mActer.exchangeWith( mActer.getStockpile(), mTarget.mType, item.mAmount);
-    }
+    }*/
 
 }
