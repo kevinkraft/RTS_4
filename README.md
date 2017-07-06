@@ -5,18 +5,10 @@ Download And Play
 ----------------------
 
 Windows:
-https://www.dropbox.com/s/kuohv550o7uu6br/RTS4_0.3_win_release.rar?dl=0
+https://www.dropbox.com/s/d7simemkf90u0ny/RTS4_0.4_win_release.rar?dl=0
 
 MacOSX:
-https://www.dropbox.com/s/4co4hfb74bajh6f/RTS4_0.3_mac_release.zip?dl=0
-
-In case of problems with the Mac versions, let me know, then try these versions instead:
-
-MacOSX V2:
-https://www.dropbox.com/s/ljb1oubtot5umx2/RTS4_0.3_mac_universal_release.zip?dl=0
-
-MacOSX V3:
-https://www.dropbox.com/s/zm4zq4mww6pmtln/RTS4_0.3_mac_x86_64_release.zip?dl=0
+https://www.dropbox.com/s/xivoze9woksrcbj/RTS4_0.4_mac_release.zip?dl=0
 
 Controls
 ---------
@@ -29,10 +21,11 @@ right click) Open the PopMenu for giving an action to an entity
 
 ctrl + leftclick) In the PopMenu ctrl + left click one of the options to queue actions, the action queue is shown in one of the side bar tabs.
 
+mouse wheel) zoom in and out
+
 The controls take a bit of getting used to because some of the actions are continuous and won't be overriden if you're holding ctrl when you select the action. If in doubt look at the Action info tab in the sidebar.
 
 Issues
 ---------
-* I haven't implemented the Work action fully. When a Unit is working a Farm, food is produced but the Unit never brings it to the stockpile. If you are relying on Food produced in a Farm, you need to move the food from the Farms to the stockpile by hand. This will be implemented in the next release.
-* When multiple Units are Constructing a Building some of the Units often get stuck Exchanging Items at the stockpile. The fix is probably simple.
+* In the mac version a green temporary plane that I use as a visual aid when making models is visible as a glitch below some of the map. This is not visible in the Windows version 
 * Garrisoned Units or Procreating Units that get hungry and leave their Garrison to get food at the stockpile often collide with the stockpile model instead of moving beside it. Also the Procreate Action gets cancelled and their Action queue gets cleared, the Units are supposed to return to the Action they were doing before they went to Eat.
