@@ -35,7 +35,7 @@ public class Procreate : Action
     //private members
     private bool mActive = true;
     private bool mWasGarrisoned = false;
-    private GameTypes.GenderTypes mActerGender = GameTypes.GenderTypes.Unknown;
+    private GameTypes.GenderType mActerGender = GameTypes.GenderType.Unknown;
     private bool mFoundPartner = false;
     private System.Random mRandomGen;
     private bool mContinuousMale = true;
@@ -107,7 +107,7 @@ public class Procreate : Action
         }
         //search the building for another unit with a procreate action, if this is female
         //the male will just wait until the females Procreate action marks it as done
-        if ( mActerGender == GameTypes.GenderTypes.Female && mPartner == null )
+        if ( mActerGender == GameTypes.GenderType.Female && mPartner == null )
         {
             //check if there are any other units first becuase it's probably faster
             if (mGarrisonBuilding.getUnitInventorySize() > 1)
@@ -117,7 +117,7 @@ public class Procreate : Action
                     if (unit.activeActionType() == "Procreate")
                     {
                         //are they opposite genders
-                        if (unit.mGender == GameTypes.GenderTypes.Male)
+                        if (unit.mGender == GameTypes.GenderType.Male)
                         {
                             //its male, start the dice rolling
                             //Debug.Log("found partner");

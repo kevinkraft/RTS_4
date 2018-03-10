@@ -19,7 +19,7 @@ public class UnitInventory : EntityContainer
     //-------------------------------------------------------------------------------------------------
     public override void Awake()
     {
-        base.Awake();
+		base.Awake();
         newGroup("units");
     }
 

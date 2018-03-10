@@ -7,7 +7,7 @@ using RTS;
 //class for the menu that appears at the click position for selection actions
 
 //Notes:
-// * All the actions are instantiate here after they are chosen
+// * All the actions are instantiated here after they are chosen
 // * Also has a feature for selecting from a list of objects, namely building type 
 //   to construct
 
@@ -82,7 +82,6 @@ public class PopMenu : Menu
     }
     public void listOutcome()
     {
-        Debug.Log("List has outcome");
         //get the chosen string
         int index = mListDropdown.value;
         if (index == 0)
@@ -119,7 +118,7 @@ public class PopMenu : Menu
         //mListDropdown.RefreshShownValue();
         mOutcome = true;
     }
-    public void populate(EntityAction selection, Entity hit_ent, Vector3 hitPoint)
+    public void populate(EntityAction selection, Entity hit_ent, Vector3 hitPoint, List<Entity> entlist=null)
     /*Get number of actions avaialble. Make the button for each action and set 
     the positions and sizes correctly*/
     {
@@ -151,7 +150,10 @@ public class PopMenu : Menu
             rt.offsetMin = new Vector2(mButtonBorder, -(bh * (i + 1) + mButtonBorder * (i + 1)));
             rt.offsetMax = new Vector2(mButtonBorder + bw, -mButtonBorder - bh * i - mButtonBorder * i);
             //set the function to call
-            b.onClick.AddListener(() => { setOutcome(title); });
+            //if (entlist == null)
+                b.onClick.AddListener(() => { setOutcome(title); });
+            //else
+            //    b.onClick.AddListener(() => { setOutcome(title, entlist); });
             //set it active
             b.gameObject.SetActive(true);
             mButtons.Add(b);
@@ -161,6 +163,11 @@ public class PopMenu : Menu
         //set the menu position
         setScreenPosition();
     }
+    /*public void populate(List<Entity> listsel, Entity hit_ent, Vector3 hitPoint)
+    {
+        EntityAction ent_act = listsel[0] as EntityAction;
+        this.populate(ent_act, hit_ent, hitPoint, listsel);
+    }*/
     public void populateListMenu()
     {
         //clear the popmenu (it doesnt clear the mOutcomeString)
@@ -198,12 +205,8 @@ public class PopMenu : Menu
     }
     public void setOutcome(string oname)
     {
-        //mOutcomeAction = new Action();
-        //EntityHP ent_hp = (EntityHP)mHitObject;
         EntityHP ent_hp = mHitObject as EntityHP;
-        //EntityAction ent_act = (EntityAction)mHitObject;
         EntityAction ent_act = mHitObject as EntityAction;
-        //Entity ent = (Entity)mHitObject;
         Entity ent = mHitObject as Entity;
         Resource res = mHitObject as Resource;
         Building build = mHitObject as Building;
@@ -322,6 +325,11 @@ public class PopMenu : Menu
                 }
                 
                 break;
+		case "Explore":
+			//Debug.Log("Explore action set as outcome");
+			Explore exp = ObjectManager.initExplore(mSelection.transform);
+			mOutcomeAction = exp;
+			break;
             default:
                 Debug.LogError(string.Format("Action keyword {0} not recoginised.",oname));
                 break;
@@ -329,6 +337,7 @@ public class PopMenu : Menu
         if (!mListActive)
             mOutcome = true;
     }
+
 
     //-------------------------------------------------------------------------------------------------
     // private methods
@@ -338,6 +347,9 @@ public class PopMenu : Menu
     {
         clearButtons();
         clearDropdownList();
+        //clear the outcome action, as it gets cloned before adding to the player
+        if (mOutcomeAction)
+            Destroy(mOutcomeAction.gameObject);
     }
 
     private void clearButtons()
@@ -371,6 +383,11 @@ public class PopMenu : Menu
             titles.Add("Wait");
             titles.Add("Construct");
         }
+		else if (mHitPoint == Globals.InvalidPosition)
+		{
+			//Debug.Log("Adding explore to menu list");
+			titles.Add("Explore");
+		}
         EntityHP ent_hp = mHitObject as EntityHP;
         if (ent_hp)
             titles.Add("Attack");
@@ -407,13 +424,15 @@ public class PopMenu : Menu
     private void setScreenPosition()
     {
         //sets the screen position of the menu using the hitpoint
-        Vector3 screenpos = Camera.main.WorldToScreenPoint(mHitPoint);
+		Vector3 screenpos = Camera.main.WorldToScreenPoint(mHitPoint);
         if (!mListActive)
         {
             setPositions(screenpos.x, screenpos.y, mWidth, mHeight);
         }
         else
+		{
             setPositions(screenpos.x, screenpos.y, mListWidth, mButtonHeight + mButtonBorder);
+		}
     }
 
 }

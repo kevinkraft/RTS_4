@@ -10,7 +10,7 @@ public class Menu : MonoBehaviour
     public string mName;
 
     //private members
-    public Canvas mCanvas;
+    private Canvas mCanvas;
 
     //-------------------------------------------------------------------------------------------------
     // unity methods
@@ -33,6 +33,8 @@ public class Menu : MonoBehaviour
 
     public virtual void setPositions(float left, float right, float top, float bottom, float aminx=0f, float aminy=0f, float amaxx=1f, float amaxy=1f, float pivotx=0.5f, float pivoty=0.5f)
     {
+		//for x , y width height centred in the menu, do:
+		//setPositions(screenpos.x - width/2, screenpos.x + width/2, -1*(screenpos.y + height/2), screenpos.y - height/2, 0f, 0f, 0f, 0f, 0.5f, 0.5f);
         //sets the position, anchors and pivots 
         //get the rect
         RectTransform rt = (RectTransform)transform;

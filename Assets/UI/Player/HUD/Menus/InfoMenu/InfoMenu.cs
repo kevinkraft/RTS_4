@@ -39,8 +39,22 @@ public class InfoMenu : Menu
         //clear menu 
         clear();
         //populate the info for the Entity
-        string text = string.Format("Name: {0} \n", ent.mName);
+        string text = string.Format("Name: {0}\n", ent.mName);
+        Vector3 epos = ent.transform.position;
+        text += string.Format("Pos: ({0:0},{1:0})\n", epos.x, epos.z);
         EntityHP ent_hp = ent as EntityHP;
+        if (ent)
+        {
+            //TEMP, see if the entity is in the visible  list
+            foreach (Entity e in ObjectManager.getVisibleEntities())
+            {
+                if (ent == e)
+                {
+                    text += string.Format("Is Visible: True\n");
+                    break;
+                }
+            }
+        }
         if (ent_hp)
             text += string.Format("HP: {0:0} \n", ent_hp.mHP);
         EntityAction ent_act = ent as EntityAction;
@@ -50,7 +64,7 @@ public class InfoMenu : Menu
             if (ent_act.mTown)
             {
                 text += string.Format("Town: {0}\n", ent_act.mTown.mName);
-                text += string.Format("StockPile: {0}\n", ent_act.mTown.mStockpile.mName);
+                //text += string.Format("StockPile: {0}\n", ent_act.mTown.mStockpile.mName);
             }
         }
         Resource res = ent as Resource;
@@ -70,7 +84,7 @@ public class InfoMenu : Menu
             //gender
             text += string.Format("Gender: {0}\n", unit.mGender.ToString());
             //pregnancy
-            if (unit.mGender == GameTypes.GenderTypes.Female )
+            if (unit.mGender == GameTypes.GenderType.Female )
             {
                 text += string.Format("Pregnant: {0}\n", unit.isPregnant().ToString());
                 if (unit.isPregnant())
@@ -97,8 +111,9 @@ public class InfoMenu : Menu
         WorkedBuilding wb = ent as WorkedBuilding;
         if (wb)
         {
-            text += string.Format("Progress: {0:0}", wb.displayProgress());
-        }
+            text += string.Format("Progress: {0:0}\n", wb.displayProgress());
+			text += string.Format("NumWorkers: {0}/{1}\n", wb.getNWorkers(), wb.getMaxWorkers() );
+		}
         mText.text = text;
     }
     public void clear()

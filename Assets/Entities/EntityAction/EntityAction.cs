@@ -127,10 +127,21 @@ public class EntityAction : EntityHP
     {
         return mInventory.getSize();
     }
+    public float getInventoryFreeSpace()
+    {
+        return mInventory.getFreeSpace();
+    }
     public Item getItemOfType(GameTypes.ItemType type)
     {
         return mInventory.getItemOfType(type);
     }
+	public bool isIdle()
+	{
+		if ( mActions.size() == 0 )
+			return true;
+		else
+			return false;
+	}
     public bool isInventoryFull()
     {
         return mInventory.isFull();

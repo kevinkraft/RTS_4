@@ -77,7 +77,7 @@ public class Eat : Action
         if ( mActer.getResource(GameTypes.ItemType.Food,5f) )
         {
             //unit has some food
-            Debug.Log("unit has some food");
+            //Debug.Log("unit has some food");
             doEat();
             return;
         }
@@ -98,7 +98,7 @@ public class Eat : Action
     //-------------------------------------------------------------------------------------------------
     private void doEat()
     {
-        Debug.Log("Eating the food in the inventory");
+        //Debug.Log("Eating the food in the inventory");
         //how much food is needed?
         float amount = mActer.getHunger() / Globals.UNIT_FOOD_HUNGER_VALUE;
         //does the unit have enough food?

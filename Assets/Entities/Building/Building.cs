@@ -17,11 +17,16 @@ public class Building : EntityAction
     //-------------------------------------------------------------------------------------------------
     public override void Awake()
     {
-        base.Awake();
-        //get the UnitInventory
-        mUnitInventory = GetComponentInChildren<UnitInventory>();
-        if (!mUnitInventory)
-            Debug.LogError("UnitInventory is null.");
+		base.Awake();
+		//get the UnitInventory
+		List<UnitInventory> uinvl = new List<UnitInventory>(GetComponentsInChildren<UnitInventory>());
+		foreach( UnitInventory uinv in uinvl )
+		{
+			if ( uinv.mName == "UnitInventory" )
+				mUnitInventory = uinv;
+		}
+		if ( uinvl.Count == 0 )
+			Debug.LogError("UnitInventory is null.");
     }
 
     private void Start()

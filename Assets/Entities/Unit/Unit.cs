@@ -21,7 +21,7 @@ public class Unit : EntityAction
     public float mMoveSpeed;
     public float mRotateSpeed;
     public float mProcreateChance;
-    public GameTypes.GenderTypes mGender;
+    public GameTypes.GenderType mGender;
     public float mConstructSpeed = 50f; //default=1
 
     //private members
@@ -58,6 +58,31 @@ public class Unit : EntityAction
         att.setTarget(target);
         //add the action to the action group component
         mActions.clearAddAction(att);
+    }
+    public void collectResource(Resource res, bool prepend = false)
+    {
+        //make a new collect instance as a child of the action group object
+        Collect col = ObjectManager.initCollect(mActions.transform);
+        //set target
+        col.setTarget(res);
+        //add the action to the action group component
+        if (prepend)
+        {
+            col.setOneRound(true);
+            mActions.prependAction(col);
+        }
+        else
+        {
+            mActions.clearAddAction(col);
+        }
+    }
+    public void dropOrDumpInventory()
+    {
+        //drops the inventory if the stockpile is full, or dumps it to the stockpile
+        if (getStockpile().isInventoryFull())
+            dropInventory();
+        else
+            dumpInventory();
     }
     public void exchangeWith(EntityAction target, GameTypes.ItemType type, float amount)
     {
@@ -108,8 +133,6 @@ public class Unit : EntityAction
         //unit has none of the item it checks the stockpile and tells them to get the item from there
         //if theres none in the stockpile it tells them to go and find the resource.
         //amount set to -1 means fill the inventory
-        //TO DO: Implement Region so that the Units have access to the list of Resources in the Region
-        //through their town
 
         //what amount do we need?
         float invcap = getInventory().mCapacity;
@@ -142,9 +165,14 @@ public class Unit : EntityAction
             exchangeWith(sp, type, -1*amount);
             return false;
         }
-        //stockpile doesn't have it
-        //DO NOTHING FOR NOW
-        Debug.Log("Need to implement Region so that units know where to find Resources to Collect");
+        //stockpile doesn't have it, get the closest resource of food type
+        Resource res = mTown.getRegion().getClosestResourceOfType(type, this);
+        if (res)
+        {
+            //Debug.Log(res.transform.position);
+            //go and collect this resource for one cycle
+            collectResource(res, true);
+        }
         return false;
     }
     public float getRotateSpeed()
@@ -165,9 +193,28 @@ public class Unit : EntityAction
     {
         return mPregnant;
     }
+	public bool makeInventorySpaceFor(GameTypes.ItemType itype)
+	{
+		//dumps everything in the inventory except items of a certain type
+		//return true if unit needs to return to stockpile, false other wise
+		Dictionary<GameTypes.ItemType, float> dict = getInventoryDictionary();
+		Building sp = getStockpile();
+		bool new_action = false;
+		foreach ( KeyValuePair<GameTypes.ItemType,float> pair in dict )
+		{
+			//skip if its the item we want
+			if ( pair.Key != itype )
+			{
+				//make an exchange with the stockpile
+				exchangeWith(sp, pair.Key, pair.Value);
+				new_action = true;
+			}
+		}
+		return new_action;
+	}
     public void makePregnant()
     {
-        if ( mGender == GameTypes.GenderTypes.Female && mPregnant == false)
+        if ( mGender == GameTypes.GenderType.Female && mPregnant == false)
         {
             mPregnant = true;
             mPregnancyProgress = 0f;
@@ -199,6 +246,19 @@ public class Unit : EntityAction
             mActions.clearAddAction(move);
         else
             mActions.prependAction(move);
+    }
+    public void returnToStockpile(GameTypes.ItemType type)
+    {
+        Item item = getItemOfType(type);
+        if (!item)
+        {
+            //this means the unit doesnt contain any of this item, which means the inventory is already full
+            //so dump the inventory
+            //Debug.Log("No item of type, the inventory must already be full. Dumping inventory");
+            dumpInventory();
+            return;
+        }
+        exchangeWith(getStockpile(), type, item.mAmount);
     }
     public void setHunger(float h)
     {
@@ -274,7 +334,7 @@ public class Unit : EntityAction
         if ( mHunger > 80f && !mActions.hasActionOfType("Eat") )
         {
             //go and eat
-            Debug.Log("Adding Eat Action");
+            //Debug.Log("Adding Eat Action");
             Eat eat = ObjectManager.initEat(mActions.transform);
             mActions.prependAction(eat);
         }
@@ -282,22 +342,22 @@ public class Unit : EntityAction
 
     private void updatePregnancy()
     {
-        if (mPregnant == true && mGender == GameTypes.GenderTypes.Female)
+        if (mPregnant == true && mGender == GameTypes.GenderType.Female)
         {
             Debug.Log("processing pregnancy");
             if (mPregnancyProgress >= 100)
             {
+                //reset pregnancy
+                mPregnant = false;
+                mPregnancyProgress = 0f;
                 //make new unit instance with random gender
-                GameTypes.GenderTypes[] genders = new[] { GameTypes.GenderTypes.Female, GameTypes.GenderTypes.Male };
-                GameTypes.GenderTypes gender = genders[mRandomGen.Next(genders.Length)];
+                GameTypes.GenderType[] genders = new[] { GameTypes.GenderType.Female, GameTypes.GenderType.Male };
+                GameTypes.GenderType gender = genders[mRandomGen.Next(genders.Length)];
                 //gender is always the same, so change the generator
                 int temp = mRandomGen.Next(0,10);
                 Unit unit = ObjectManager.initUnit(transform.position, gender, mTown);
                 //send new units to the main hut, so the user knows they are new
                 unit.waitAt(mTown.mMainBuilding);
-                //reset pregnancy
-                mPregnant = false;
-                mPregnancyProgress = 0f;
             }
             else
             {

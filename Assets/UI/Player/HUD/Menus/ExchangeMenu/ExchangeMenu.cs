@@ -18,6 +18,7 @@ public class ExchangeMenu : Menu
     public Dropdown mItemDropdown;
     public InputField mNumberField;
     public Text mDisplayText;
+    public bool mInUse = false;
 
     //private members
     //private EntityAction mActer;
@@ -83,6 +84,7 @@ public class ExchangeMenu : Menu
         mDisplayText.text = "";
         transform.SetAsFirstSibling();
         gameObject.SetActive(false);
+        mInUse = false;
     }
     public void dropdownChanged()
     {
@@ -164,6 +166,8 @@ public class ExchangeMenu : Menu
     public void populate(EntityAction acter, EntityAction target)
     {
         gameObject.SetActive(true);
+        mCancelled = false;
+        mInUse = true;
         //add options to the acter drop down
         //List<string> act_opts = new List<string> { "Item1", "Item2", "Item3", "Item4" };
         //mItemDropdown.AddOptions(act_opts);

@@ -16,7 +16,9 @@ public class GameObjectList : MonoBehaviour
     public List<GameObject> mUnits;
     public List<GameObject> mBuildings;
     public List<GameObject> mConstructions;
-    //public GameObject player;
+    public List<GameObject> mMaps;
+	public List<GameObject> mRegions;
+	//public GameObject player;
 
     //private members
     private static bool created = false;
@@ -36,7 +38,9 @@ public class GameObjectList : MonoBehaviour
             mUnits = getUnitComponentObjects();
             mBuildings = getBuildingComponentObjects();
             mConstructions = getConstructionComponentObjects();
-            ObjectManager.setGameObjectList(this);
+            mMaps = getMapComponentObjects();
+			mRegions = getRegionComponentObjects();
+			ObjectManager.setGameObjectList(this);
             created = true;
         }
         else
@@ -123,6 +127,24 @@ public class GameObjectList : MonoBehaviour
         }
         return null;
     }
+    public GameObject getMap(string m_name)
+    {
+        for (int i = 0; i < mMaps.Count; i++)
+        {
+            Map m = mMaps[i].GetComponent<Map>();
+            if (m && m.mName == m_name) return mMaps[i];
+        }
+        return null;
+    }
+	public GameObject getRegion(string r_name)
+	{
+		for (int i = 0; i < mRegions.Count; i++)
+		{
+			Region r = mRegions[i].GetComponent<Region>();
+			if (r && r.mName == r_name) return mRegions[i];
+		}
+		return null;
+	}
 
     //-------------------------------------------------------------------------------------------------
     // private methods
@@ -224,6 +246,32 @@ public class GameObjectList : MonoBehaviour
         }
         return c_objects;
     }
+    private List<GameObject> getMapComponentObjects()
+    {
+        //returns a list of child game objects which contain a Map script component 
+        //this allows to just drop the Map prefabs as children in GameObjectList/Maps
+        List<GameObject> c_objects = new List<GameObject>();
+        Component[] child_objects = this.GetComponentsInChildren<Transform>();
+        foreach (Component cobj in child_objects)
+        {
+            if (cobj.gameObject.GetComponent<Map>() != null)
+                c_objects.Add(cobj.gameObject);
+        }
+        return c_objects;
+    }
+	private List<GameObject> getRegionComponentObjects()
+	{
+		//returns a list of child game objects which contain a Region script component 
+		//this allows to just drop the Region prefabs as children in GameObjectList/Regions
+		List<GameObject> c_objects = new List<GameObject>();
+		Component[] child_objects = this.GetComponentsInChildren<Transform>();
+		foreach (Component cobj in child_objects)
+		{
+			if (cobj.gameObject.GetComponent<Region>() != null)
+				c_objects.Add(cobj.gameObject);
+		}
+		return c_objects;
+	}
 
 
 

@@ -21,10 +21,20 @@ public class Work : Action
         getActer();
         if (!mActer || !mTarget)
             Debug.LogError("No acter and/or target set.");
+		//can the work building hve any more workers?
+		if ( mTarget.getMaxWorkers() <= mTarget.getNWorkers() )
+		{
+			//no space for more workers
+			mComplete = true;
+			return;
+		}
+		else
+		{
+			mTarget.addWorker( mActer );
+		}
     }
     public override void Update()
     {
-        Debug.Log("working");
         //is it dead yet?
         if (!mTarget)
         {
@@ -52,6 +62,13 @@ public class Work : Action
         Vector3 direction = mActer.pointOfTouchingBounds(mTarget);
         mActer.moveTo(direction, false);
     }
+	public virtual void OnDestroy()
+	{
+		//remove this worker from the WorkedBuilding worker container
+		if ( mTarget )
+			mTarget.removeWorker(mActer);
+	}
+
 
     //-------------------------------------------------------------------------------------------------
     // public methods
@@ -70,6 +87,34 @@ public class Work : Action
     //-------------------------------------------------------------------------------------------------
     private void doWork()
     {
+		if (mActer.isInventoryFull())
+		{
+			//make sure there is nothing else filling up the inventory
+			if ( mActer.makeInventorySpaceFor(mTarget.getCreateItemType()) )
+				return;
+			mActer.returnToStockpile(mTarget.getCreateItemType());
+		}
+
+        //is the worked buildings inventory more than half full?
+        if ( mTarget.getInventorySize() >= mTarget.getInventory().mCapacity/2f )
+        {
+            //worked buildings inventory is more than half full, fill inventory
+            //if the inventory is already full, return to stockpile
+
+			//if (mActer.isInventoryFull())
+            //{
+            //    //this will dump the inventory if it full of some other item
+            //    
+            //}
+            //else
+            //{
+				//clear the unit inventory of everything but the required item
+
+            float invspace = mActer.getInventoryFreeSpace();
+            mActer.exchangeWith(mTarget, mTarget.getCreateItemType(), -1f*invspace);
+            //}
+            return;
+        }
         mTarget.doCycle();
     }
 

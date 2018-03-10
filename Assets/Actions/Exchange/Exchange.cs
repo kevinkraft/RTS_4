@@ -24,6 +24,7 @@ public class Exchange : Action
     private ExchangeMenu mExchangeMenu;
     private int mCyclesToSkip = 2;
     private int mCycleCounter = 0;
+    private bool mQForMenu = false;
 
     //-------------------------------------------------------------------------------------------------
     // unity methods
@@ -33,8 +34,12 @@ public class Exchange : Action
         base.Awake();
         //get the player and the ExchangeMenu
         mPlayer = transform.root.GetComponentInChildren<Player>();
-        if ( !mPlayer && !GetComponentInParent<GameObjectList>() )
-            Debug.LogError("Didn't find player.");
+        if (!mPlayer && !GetComponentInParent<GameObjectList>())
+        {
+            mPlayer = transform.root.GetComponent<Player>();
+            if (!mPlayer)
+                Debug.LogError("Didn't find player.");
+        }
     }
     public override void Start()
     {
@@ -53,20 +58,50 @@ public class Exchange : Action
         if (mExchangeList.Count == 0)
         {
             mWaitForMenu = true;
-            mExchangeMenu.populate(mActer, mTarget);
+            /*if (!mExchangeMenu.mInUse)
+                mExchangeMenu.populate(mActer, mTarget);
+            else
+            {
+                mQForMenu = true;
+            }*/
+            mQForMenu = true;
         }
     }
     public override void Update()
     {
+        //Debug.Log(string.Format("running exchange. mQForMenu {0}", mQForMenu.ToString()));
+		//Debug.Log(string.Format("running exchange. mWaitForMenu {0}", mWaitForMenu.ToString()));
+		//Debug.Log(string.Format("running exchange. mExchangeMenu.isCancelled() {0}", mExchangeMenu.isCancelled().ToString()));
+		//Debug.Log(string.Format("running exchange. mExchangeList.Count {0}", mExchangeList.Count.ToString()));
+		//is the menu in use by another exchange action?
+        if (mQForMenu == true)
+        {
+            //Debug.Log("In Q for menu");
+            //in waiting mode
+            if (mExchangeMenu.mInUse == true)
+            {
+                //Debug.Log("Menu not free");
+                return;
+            }
+            else
+            {
+                //its free now
+                //Debug.Log("Menu is now free");
+                mExchangeMenu.populate(mActer, mTarget);
+                mQForMenu = false;
+            }
+        }
         //has the menu been cancelled
         if ( mWaitForMenu && mExchangeMenu.isCancelled() )
         {
+            //Debug.Log("waiting for menu but it was cancelled");
             mComplete = true;
             return;
         }
         //has the exchange list been populated?
         if ( mWaitForMenu )
         {
+            //Debug.Log("waiting for menu");
             //Debug.Log("waiting for menu.");
             if (mExchangeMenu.hasMadeSelection() == true)
             {
@@ -82,6 +117,13 @@ public class Exchange : Action
         if (mExchangeList.Count == 0 && mWaitForMenu == false)
         {
             //Debug.Log("exchange action is finished");
+            mComplete = true;
+            return;
+        }
+        //is it dead yet?
+        if (!mTarget)
+        {
+            //Debug.Log("target is null, it must be dead.");
             mComplete = true;
             return;
         }
@@ -112,7 +154,13 @@ public class Exchange : Action
     //-------------------------------------------------------------------------------------------------
     public override string print()
     {
-        return "Exchange\n";
+		string text = "";
+		foreach (KeyValuePair<GameTypes.ItemType,float> pair in mExchangeList)
+		{
+			text += string.Format("Exchange {0} {1}\n", pair.Key.ToString(), pair.Value.ToString() );
+		}
+		return text;
+        //return "Exchange\n";
     }
     public void setExchangeList(Dictionary<GameTypes.ItemType, float> list)
     {

@@ -7,8 +7,9 @@ using RTS;
 
 //Notes:
 // * Has a progress bar which the working Unit fills as they work to produce some item
-// * Generally the WorkedBuildings will add an item to the buildings inventory, so this
-//   can be handled in this class, and ignored in any child classes that dont need it
+// * WorkedBuilding takes in no items, need to make a child class that takes in items
+// * Has a max number of workers
+//   * But it doesnt need to know who the workers are
 
 public class WorkedBuilding : Building
 {
@@ -18,25 +19,50 @@ public class WorkedBuilding : Building
     private float mMaxProgress = 100f;
     private GameTypes.ItemType mCreateItemType = GameTypes.ItemType.Unknown;
     private float mCreateItemAmount = 5;
+	private UnitInventory mWorkers;
 
     //-------------------------------------------------------------------------------------------------
     // unity methods
     //-------------------------------------------------------------------------------------------------
+	public override void Awake()
+	{
+		//dont call building.Awake as it only knows about a single UnitInventory, there are two here
+		base.Awake();
+		//get the UnitInventory
+		List<UnitInventory> uinvl = new List<UnitInventory>(GetComponentsInChildren<UnitInventory>());
+		foreach( UnitInventory uinv in uinvl )
+		{
+			if ( uinv.mName == "UnitInventory" )
+				mUnitInventory = uinv;
+			else if ( uinv.mName == "WorkerContainer" )
+				mWorkers = uinv;
+			else
+				Debug.LogError("UnitInventory "+uinv.mName+" is not recognised.");
+		}
+		if ( uinvl.Count == 0 )
+			Debug.LogError("UnitInventory is null.");
+	}
     private void Start()
     {
         base.Start();
         //setup the type
         setupType();
-    }
 
+    }
     //-------------------------------------------------------------------------------------------------
     // public methods
     //-------------------------------------------------------------------------------------------------
-    public float displayProgress()
+	public void addWorker(Unit worker)
+	{
+		if ( getMaxWorkers() > getNWorkers() )
+			mWorkers.addUnit(worker);
+	}
+	public float displayProgress()
     {
         return 100f * mProgress / mMaxProgress;
     }
-    public void doCycle(float amount=0.01f)
+    
+    public void doCycle(float amount = 0.1f)
     {
         //is the progress bar full?
         if (mProgress >= mMaxProgress)
@@ -75,10 +101,33 @@ public class WorkedBuilding : Building
         mProgress += amount;
 
     }
+    public GameTypes.ItemType getCreateItemType()
+    {
+        return mCreateItemType;
+    }
+	public int getMaxWorkers()
+	{
+		return mWorkers.mCapacity;
+	}
+	public int getNWorkers()
+	{
+		return mWorkers.getSize();
+	}
     public float getProgress()
     {
         return mProgress;
     }
+	public bool needsWorkers()
+	{
+		if ( getNWorkers() < getMaxWorkers() )
+			return true;
+		else
+			return false;
+	}
+	public void removeWorker(Unit worker)
+	{
+		mWorkers.removeUnit(worker);
+	}
     public void setProgress(float p)
     {
         mProgress = p;
@@ -93,10 +142,11 @@ public class WorkedBuilding : Building
         switch (mType)
         {
             case GameTypes.BuildingType.Farm:
-                getInventory().mCapacity = 50;
+                getInventory().mCapacity = 50; //default 50
                 mUnitInventory.mCapacity = 2;
-                mMaxProgress = 40; //default 100
+                mMaxProgress = 100; //default 100
                 mCreateItemType = GameTypes.ItemType.Food;
+				mWorkers.mCapacity = 2;
                 break;
             default:
                 Debug.LogError(string.Format("WorkedBuilding type {0} not recognised",mType.ToString()));

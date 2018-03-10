@@ -17,22 +17,250 @@ Platform assembly: D:\Programs\GitHub\RTS_4\Builds\RTS4_0.4_Data\Managed\UnityEn
 Loading D:\Programs\GitHub\RTS_4\Builds\RTS4_0.4_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: D:\Programs\GitHub\RTS_4\Builds\RTS4_0.4_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
 Loading D:\Programs\GitHub\RTS_4\Builds\RTS4_0.4_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
-- Completed reload, in  0.018 seconds
+- Completed reload, in  0.016 seconds
 Platform assembly: D:\Programs\GitHub\RTS_4\Builds\RTS4_0.4_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: D:\Programs\GitHub\RTS_4\Builds\RTS4_0.4_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 59Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 0.996497 ms
+UnloadTime: 0.942082 ms
 Can't find SelectionBox in HUD. I disabled it.
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 302c -> priority: 1 
-  Thread -> id: 884 -> priority: 1 
+  Thread -> id: 24b8 -> priority: 1 
+  Thread -> id: 275c -> priority: 1 
+mouse held
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHeld () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+mouse held
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHeld () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+mouse held
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHeld () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+mouse held
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHeld () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+mouse held
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHeld () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+mouse held
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHeld () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+mouse held
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHeld () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+mouse held
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHeld () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+mouse held
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHeld () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+mouse held
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHeld () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+mouse held
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHeld () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+mouse held
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHeld () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+mouse held
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHeld () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+hold released
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHoldRelease () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+mouse held
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHeld () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+mouse held
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHeld () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+mouse held
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHeld () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+mouse held
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHeld () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+hold released
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHoldRelease () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
 left mouse click
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+left mouse click
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+left mouse click
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+hold released
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UserInput.leftMouseHoldRelease () [0x00000] in <filename unknown>:0 
+  at UserInput.mouseActivity () [0x00000] in <filename unknown>:0 
+  at UserInput.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
 

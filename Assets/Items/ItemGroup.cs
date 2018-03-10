@@ -67,6 +67,14 @@ public class ItemGroup : MonoBehaviour
             return true;
         }
     }
+    public float getFreeSpace()
+    {
+        float fs = mCapacity - getSize();
+        if (fs > 0.01)
+            return fs;
+        else
+            return 0f;
+    }
     public Item getItemOfType(GameTypes.ItemType type)
     {
         foreach (Item item in mItems)

@@ -54,9 +54,12 @@ public class SideBar : MonoBehaviour
 
     public void populate(Entity ent)
     {
-        mInfoMenu.populate(ent);
-        mInventoryMenu.populate(ent);
-        mActionMenu.populate(ent);
+		if (ent)
+		{
+        	mInfoMenu.populate(ent);
+        	mInventoryMenu.populate(ent);
+        	mActionMenu.populate(ent);
+		}
     }
 
 }

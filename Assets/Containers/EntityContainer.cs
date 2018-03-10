@@ -24,7 +24,11 @@ public class EntityContainer : Selectable
     {
         base.Awake();
     }
-
+    public override void Update()
+    {
+        base.Update();
+        removeDeadEntities();
+    }
     //-------------------------------------------------------------------------------------------------
     // public methods
     //-------------------------------------------------------------------------------------------------
@@ -66,6 +70,26 @@ public class EntityContainer : Selectable
         else
             return new List<Entity>();
     }
+    public void removeContainer(string cname, EntityContainer ec)
+    {
+        //removes ec from container map group named cname if ec is in that group
+        bool contains_ec = false;
+        if (mContainerMap.ContainsKey(cname))
+        {
+            foreach (EntityContainer lec in mContainerMap[cname])
+            {
+                if (lec == ec)
+                {
+                    contains_ec = true;
+                    break;
+                }
+            }
+            if (contains_ec)
+            {
+                mContainerMap[cname].Remove(ec);
+            }
+        }
+    }
     public void removeEntity(string gname, Entity ent)
     {
         //removes ent from group named gname if ent is in that group
@@ -90,7 +114,15 @@ public class EntityContainer : Selectable
     //-------------------------------------------------------------------------------------------------
     // protected methods
     //-------------------------------------------------------------------------------------------------
-    protected void newGroup(string gname)
+	protected void newContainerGroup(string cname)
+	{
+		if (!mContainerMap.ContainsKey(cname))
+		{
+			List<EntityContainer> lempty = new List<EntityContainer>();
+			mContainerMap.Add(cname, lempty);
+		}
+	}
+	protected void newGroup(string gname)
     {
         if (!mGroupMap.ContainsKey(gname))
         {
@@ -99,5 +131,24 @@ public class EntityContainer : Selectable
         }
     }
 
+    //-------------------------------------------------------------------------------------------------
+    // private methods
+    //-------------------------------------------------------------------------------------------------
+    private void removeDeadEntities()
+    {
+        Dictionary<string, List<Entity>> gm = new Dictionary<string, List<Entity>>();
+        foreach (KeyValuePair<string, List<Entity>> pair in mGroupMap)
+        {
+            List<Entity> elist = new List<Entity>(pair.Value);
+            foreach (Entity ent in pair.Value)
+            {
+                if (!ent)
+                    elist.Remove(ent);
+            }
+            gm[pair.Key] = elist;
+        }
+        mGroupMap = gm;
+
+    }
 
 }

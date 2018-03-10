@@ -15,9 +15,8 @@ public class Movement : Action
     public Vector3 mDestination = Globals.InvalidPosition;
     public Unit mActer;
 
-    //private members
-    //private bool mMoving, mRotating;
-    private Quaternion mDestinationRotation;
+    //protected members
+    protected Quaternion mDestinationRotation;
 
     //-------------------------------------------------------------------------------------------------
     // unity methods
@@ -67,7 +66,6 @@ public class Movement : Action
     }
     public override void setComplete(bool b)
     {
-        //Debug.Log("in move set complete");
         mComplete = b;
     }
     public void setDestination(Entity ent)
@@ -82,7 +80,6 @@ public class Movement : Action
     //-------------------------------------------------------------------------------------------------
     // protected methods
     //-------------------------------------------------------------------------------------------------
-
 
     protected virtual void MakeMove()
     {
@@ -111,11 +108,7 @@ public class Movement : Action
             return false;
         }
     }
-
-    //-------------------------------------------------------------------------------------------------
-    // private methods
-    //-------------------------------------------------------------------------------------------------
-    private void getActer()
+    protected void getActer()
     {
        mActer = GetComponentInParent<Unit>();
     }

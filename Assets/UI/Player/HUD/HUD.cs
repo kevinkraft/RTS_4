@@ -10,11 +10,14 @@ public class HUD : MonoBehaviour
     public GUISkin mSelectBoxSkin;
     public PopMenu mPopMenu;
     public ExchangeMenu mExchangeMenu;
+    public SelectionBox mSelectionBox;
 
     //private members
     private Rect mPlayingArea;
     private SideBar mSideBar;
-    
+	private List<IconPanel> mIcons = new List<IconPanel>();
+	private Canvas mScreenBarsCanvas;
+	private Canvas mCameraSpaceCanvas;
 
     //-------------------------------------------------------------------------------------------------
     // unity methods
@@ -26,6 +29,9 @@ public class HUD : MonoBehaviour
         mSideBar = GetComponentInChildren<SideBar>();
         if (!mSideBar)
             Debug.LogError("Can't find SideBar in HUD");
+        mSelectionBox = GetComponentInChildren<SelectionBox>();
+        if (!mSelectionBox)
+            Debug.Log("Can't find SelectionBox in HUD. I disabled it.");
         mPopMenu = GetComponentInChildren<PopMenu>();
         if (!mPopMenu)
             Debug.LogError("Can't find PopMenu in HUD");
@@ -34,6 +40,17 @@ public class HUD : MonoBehaviour
         if (!mExchangeMenu)
             Debug.LogError("Can't find ExchangeMenu in HUD");
         mExchangeMenu.gameObject.SetActive(false);
+		//get the canvases
+		List<Canvas> clist = new List<Canvas>(GetComponentsInChildren<Canvas>());
+		foreach (Canvas c in clist)
+		{
+			if ( c.gameObject.name == "ScreenBarsCanvas" )
+				mScreenBarsCanvas = c;
+			else if ( c.gameObject.name == "CameraSpaceCanvas" )
+				mCameraSpaceCanvas = c;
+			else
+				Debug.LogWarning("Canvas with name "+c.gameObject.name+" not recognised");
+		}
     }
 
     void Start ()
@@ -42,6 +59,8 @@ public class HUD : MonoBehaviour
 	
 	void Update ()
     {
+		//manage the current icons
+		manageIcons();
 	}
 
     //-------------------------------------------------------------------------------------------------
@@ -58,19 +77,38 @@ public class HUD : MonoBehaviour
   
     public void drawSelectionBox(Entity ent)
     {
-        GUI.skin = mSelectBoxSkin;
-        Rect selectBox = calculateSelectionBox(ent);
-        //Draw the selection box around the currently selected object, within the bounds of the playing area
-        GUI.BeginGroup(mPlayingArea);
-        GUI.Box(selectBox, "");
-        //GUI.Label(new Rect(selectBox.x, selectBox.y - 7, selectBox.width * healthPercentage, 5), "", healthStyle);
-        GUI.EndGroup();
+		if (ent)
+		{
+        	GUI.skin = mSelectBoxSkin;
+        	Rect selectBox = calculateSelectionBox(ent);
+        	//Draw the selection box around the currently selected object, within the bounds of the playing area
+        	GUI.BeginGroup(mPlayingArea);
+        	GUI.Box(selectBox, "");
+        	//GUI.Label(new Rect(selectBox.x, selectBox.y - 7, selectBox.width * healthPercentage, 5), "", healthStyle);
+        	GUI.EndGroup();
+		}
     }
-
+    public void drawSelectionBox(List<Entity> ents)
+    {
+        foreach(Entity ent in ents)
+            drawSelectionBox(ent);
+    }
     public void drawSideBar(Entity ent)
     {
         mSideBar.populate(ent);
     }
+
+	public void makeIconIfNeeded(Entity ent)
+	{
+		//make an icon of the given type for the given entity if its necessary
+		if ( ent.hasIcon() == true )
+			return;
+		GameTypes.IconType itype = needsIcon(ent);
+		if ( itype != GameTypes.IconType.Unknown )
+		{
+			makeIcon(ent, itype);
+		}
+	}
 
     public bool mouseInBounds()
     {
@@ -85,15 +123,17 @@ public class HUD : MonoBehaviour
     }
     public void populatePopMenu(Entity sel, GameObject obj, Vector3 hitPoint)
     {
-        if (!obj && hitPoint == Globals.InvalidPosition)
-            return;
-        Entity ent = obj.GetComponentInParent<Entity>();
-        EntityAction sel_act = (EntityAction)sel;
+		//REMOVED THIS FOR EXPLORE ACTION
+        //if (!obj && hitPoint == Globals.InvalidPosition)
+        //    return;
+		Entity ent = null;
+		if (obj)
+        	ent = obj.GetComponentInParent<Entity>();
+		EntityAction sel_act = (EntityAction)sel;
         if (sel_act)
         {
             //populate the menu
             mPopMenu.populate(sel_act, ent, hitPoint);
-            //mPopMenu.gameObject.SetActive(true);
         }
 
     }
@@ -143,6 +183,47 @@ public class HUD : MonoBehaviour
 
         return new Rect(selectBoxLeft, selectBoxTop, selectBoxWidth, selectBoxHeight);
     }
+
+	private void makeIcon(Entity ent, GameTypes.IconType itype)
+	{
+		IconPanel ip = Instantiate(ObjectManager.getMenu("IconPanel"), mCameraSpaceCanvas.transform).GetComponent<IconPanel>();
+		ip.mEntity = ent;
+		ip.mIconType = itype;
+		ip.mActive = true;
+		//add it to the list to keep track
+		mIcons.Add(ip);
+	}
+	private void manageIcons()
+	{
+		//remove icons if no longer necessary
+		for (int i = mIcons.Count - 1; i >= 0; i--)
+		{
+			if ( needsIcon(mIcons[i].mEntity) == GameTypes.IconType.Unknown )
+			{
+				IconPanel pan = mIcons[i];
+				mIcons.RemoveAt(i);
+				Destroy(pan.gameObject);
+			}
+		}
+
+	}
+	private GameTypes.IconType needsIcon(Entity ent)
+	{
+		//check conditions for displaying certain icons above entities to convey information
+		Unit unit = ent as Unit;
+		WorkedBuilding wb = ent as WorkedBuilding;
+		if ( unit )
+		{
+			if ( unit.isIdle() )
+				return GameTypes.IconType.Caution;
+		}
+		else if ( wb )
+		{
+			if ( wb.needsWorkers() )
+				return GameTypes.IconType.Caution;
+		}
+		return GameTypes.IconType.Unknown;
+	}
 
     private void setPlayingArea()
     {

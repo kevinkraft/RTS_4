@@ -8,12 +8,13 @@ namespace RTS
     public static class Globals
     {
         //scroll and camera
-        public static float ScrollSpeed { get { return 35; } }
-        public static float RotateSpeed { get { return 100; } }
-        public static int ScrollWidth { get { return 15; } }
+        public static float ScrollSpeed { get { return 2; } }
+        public static float RotateSpeed { get { return 200; } }
+        public static int ScrollWidth { get { return 20; } }
         public static float MinCameraHeight { get { return 10; } }
-        public static float MaxCameraHeight { get { return 40; } }
-        public static float RotateAmount { get { return 10; } }
+        //public static float MaxCameraHeight { get { return 150; } } //default
+		public static float MaxCameraHeight { get { return 450; } } //testing
+        public static float RotateAmount { get { return 20; } }
 
         //mouse clicks
         private static Vector3 invalidPosition = new Vector3(-99999, -99999, -99999);
@@ -25,16 +26,37 @@ namespace RTS
         public static float POP_MENU_BUTTON_BORDER { get { return 5; } }
         public static float POP_MENU_LIST_WIDTH { get { return 100f; } }
 
+		//IconPanel
+		public static float ICON_PANEL_UNIT_OFFSET { get { return 30; } }
+		public static float ICON_PANEL_UNIT_WIDTH { get { return 20; } }
+		public static float ICON_PANEL_BUILDING_OFFSET { get { return 45; } }
+		public static float ICON_PANEL_BUILDING_WIDTH { get { return 45; } }
+
         //units
         public static float UNIT_PREGNANCY_CYCLE_PROGRESS { get { return 0.05f; } }
         //public static float UNIT_HUNGER_CYCLE_INCREASE { get { return 0.001f; } } //too low
         public static float UNIT_HUNGER_CYCLE_INCREASE { get { return 0.01f; } } //this is a good value with hunger_value = 10f, default
         //public static float UNIT_HUNGER_CYCLE_INCREASE { get { return 0.05f; } } //for testing
         //public static float UNIT_HUNGER_CYCLE_INCREASE { get { return 0.1f; } } //for testing
+        //public static float UNIT_HUNGRY_DAMAGE_TAKEN { get { return 0.0f; } } // for testing
         public static float UNIT_HUNGRY_DAMAGE_TAKEN { get { return 0.05f; } } // default
         //public static float UNIT_HUNGRY_DAMAGE_TAKEN { get { return 0.1f; } } //for testing
         //the value of 1 Food in terms of unit hunger
-        public static float UNIT_FOOD_HUNGER_VALUE { get { return 10f; } } 
+        public static float UNIT_FOOD_HUNGER_VALUE { get { return 10f; } }
+
+        //maps
+		public static int REGION_MAP_WIDTH { get { return 300; } } //default, for now
+		//public static int REGION_MAP_WIDTH { get { return 900; } } //testing, a bit large
+		public static Dictionary<Vector2, GameTypes.MapType> DEFAULT_MAP_GRID_START { get { 
+				Dictionary<Vector2,GameTypes.MapType> d = new Dictionary<Vector2,GameTypes.MapType>();
+				//add the locations and types here
+				d.Add (new Vector2(0,0), GameTypes.MapType.GrassPlain);
+				//d.Add (new Vector2(0,-1), GameTypes.MapType.GrassPlain);
+				return d;
+				} }
+
+        //resources
+        public static int RESOURCE_DEFAULT_AMOUNT { get { return 1000; } }
 
         //Materials needed for Construction types
         public static Dictionary<GameTypes.ItemType, float> MAINHUT_CONSTRUCTION_MATERIALS { get { return new Dictionary<GameTypes.ItemType, float>()
@@ -70,6 +92,40 @@ namespace RTS
     {
         //private members
         private static GameObjectList mGameObjectList;
+
+        //visible entity list
+        private static List<Entity> mVisibleEntities = new List<Entity>();
+        public static void addVisibleEntity(Entity ent)
+        {
+            foreach (Entity inent in mVisibleEntities)
+            {
+                if (inent == ent)
+                {
+                    Debug.LogError("This entity is already in the visible list.");
+                    return;
+                }
+            }
+            mVisibleEntities.Add(ent);
+        }
+        public static void removeVisibleEntity(Entity ent)
+        {
+            bool in_list = false;
+            foreach (Entity inent in mVisibleEntities)
+            {
+                if (inent == ent)
+                    in_list = true;
+            }
+            if (in_list == false)
+            {
+                Debug.LogError("This entity is not in the visible list.");
+                return;
+            }
+            mVisibleEntities.Remove(ent);
+        }
+        public static List<Entity> getVisibleEntities()
+        {
+            return mVisibleEntities;
+        }
 
         //get functions
         public static void setGameObjectList(GameObjectList objectList)
@@ -108,6 +164,14 @@ namespace RTS
         {
             return mGameObjectList.getConstruction(c_name);
         }
+        public static GameObject getMap(string m_name)
+        {
+            return mGameObjectList.getMap(m_name);
+        }
+		public static GameObject getRegion(string r_name)
+		{
+			return mGameObjectList.getRegion(r_name);
+		}
 
         //init action functions
         public static Attack initAttack(Transform parent)
@@ -160,6 +224,11 @@ namespace RTS
             Work wr = GameObject.Instantiate(getAction("Work"), parent).GetComponent<Work>();
             return wr;
         }
+		public static Explore initExplore(Transform parent)
+		{
+			Explore exp = GameObject.Instantiate(getAction("Explore"),parent).GetComponent<Explore>();
+			return exp;
+		}
 
         //init item function
         public static Item initItem(GameTypes.ItemType type, Transform parent)
@@ -172,7 +241,7 @@ namespace RTS
         }
 
         //init unit functions
-        public static Unit initUnit( Vector3 pos, GameTypes.GenderTypes gender, Town town)
+        public static Unit initUnit( Vector3 pos, GameTypes.GenderType gender, Town town)
         {
             Unit unit = GameObject.Instantiate(getUnit("Unit"), town.gameObject.transform).GetComponent<Unit>();
             unit.mGender = gender;
@@ -201,6 +270,38 @@ namespace RTS
             return constro;
         }
 
+        //init map function
+        public static Map initMap(Vector3 pos, GameTypes.MapType mt, Region reg, int seed)
+        {
+            Map map = GameObject.Instantiate(getMap(mt.ToString()), reg.gameObject.transform).GetComponent<Map>();
+            map.gameObject.transform.position = pos;
+            map.mType = mt;
+            reg.addMap(map);
+            map.mSeed = seed;
+            return map;
+        }
+		//init Region function
+		public static Region initRegion(Vector2 grid_pos, GameTypes.MapType mt, WorldManager wm, int seed)
+		{
+			Region reg = GameObject.Instantiate(getRegion("Region"), wm.gameObject.transform).GetComponent<Region>();
+			reg.setGridPos(grid_pos);
+			reg.mType = mt;
+			reg.mSeed = seed;
+			//wm.addRegion(reg);
+			return reg;
+		}
+        //init Resource function
+        public static Resource initResource(Vector3 pos, GameTypes.ItemType type, Region reg)
+        {
+            Resource res = GameObject.Instantiate(getResource(type.ToString()), reg.getResourceObject().transform).GetComponent<Resource>();
+            res.gameObject.transform.position = pos;
+            res.mType = type;
+            reg.addEntity("resources",res);
+            res.mAmount = Globals.RESOURCE_DEFAULT_AMOUNT;
+            return res;
+        }
+
+
 
     }
 
@@ -214,7 +315,13 @@ namespace RTS
         public enum BuildingType { Unknown, MainHut, Stockpile, Farm };
 
         //unknown must be first
-        public enum GenderTypes { Unknown, Male, Female };
+        public enum GenderType { Unknown, Male, Female };
+
+        //unknown must be first
+        public enum MapType { Unknown, GrassPlain};
+
+		//unknown must be first
+		public enum IconType { Unknown, Caution};
     }
 
 }
