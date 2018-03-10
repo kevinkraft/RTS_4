@@ -29,10 +29,12 @@ public class EntityAction : EntityHP
         if (!mActions)
             Debug.LogError("ItemGroup is null.");
     }
+
     public override void Start()
     {
      base.Start();
     }
+
     public override void Update()
     {
         if (!isInstantiated)
@@ -80,10 +82,12 @@ public class EntityAction : EntityHP
                 break;
         }
     }
+
     public bool addItem(Item item)
     {
         return mInventory.addItem(item);
     }
+
     public void dropInventory()
     {
         //drop the units inventory on the ground
@@ -91,6 +95,7 @@ public class EntityAction : EntityHP
         //Currently I'm just deleting them
         mInventory.wipe();
     }
+
     public void dumpInventory()
     {
         //drop everything in the inventory into the stockpile
@@ -99,6 +104,7 @@ public class EntityAction : EntityHP
         ex.setExchangeList(getInventoryDictionary());
         mActions.prependAction(ex);
     }
+
     public string activeActionType()
     {
         if (mActions.size() > 0)
@@ -107,6 +113,7 @@ public class EntityAction : EntityHP
         }
         return "";
     }
+
     public Action getActiveAction()
     {
         if (mActions.size() > 0)
@@ -115,26 +122,32 @@ public class EntityAction : EntityHP
         }
         return null;
     }
+
     public ItemGroup getInventory()
     {
         return mInventory;
     }
-    public Dictionary<GameTypes.ItemType, float> getInventoryDictionary()
+
+    public Dictionary<GameTypes.ItemType, int> getInventoryDictionary()
     {
         return mInventory.getInventoryDictionary();
     }
-    public float getInventorySize()
+
+    public int getInventorySize()
     {
         return mInventory.getSize();
     }
-    public float getInventoryFreeSpace()
+
+    public int getInventoryFreeSpace()
     {
         return mInventory.getFreeSpace();
     }
+
     public Item getItemOfType(GameTypes.ItemType type)
     {
         return mInventory.getItemOfType(type);
     }
+
 	public bool isIdle()
 	{
 		if ( mActions.size() == 0 )
@@ -142,18 +155,22 @@ public class EntityAction : EntityHP
 		else
 			return false;
 	}
+
     public bool isInventoryFull()
     {
         return mInventory.isFull();
     }
+
     public string printActions()
     {
         return mActions.print();
     }
+
     public string printInventory()
     {
         return mInventory.print();
     }
+
     public override void mouseClick(GameObject hitObject, Vector3 hitPoint)
     {
         //process a left mouse click while this entity is selected by the player

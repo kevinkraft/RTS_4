@@ -28,6 +28,7 @@ public class Collect : Action
     private int mCyclesToSkip = 3;
     private int mCycleCounter = 0;
     private bool mOneRound = false; //if true the unit will stop when its inventory is full
+	private float mProgress = 0f;
 
     //-------------------------------------------------------------------------------------------------
     // unity methods
@@ -38,6 +39,7 @@ public class Collect : Action
         if (!mActer || !mTarget)
             Debug.LogError("No acter and/or target set.");
     }
+
     public override void Update()
     {
         /*//the collect speed is too fast so only collect every second cycle
@@ -100,10 +102,12 @@ public class Collect : Action
     {
         return string.Format( "Collect: {0}\n", mTarget.mType.ToString() );
     }
+
     public void setOneRound(bool b)
     {
         mOneRound = b;
     }
+
     public void setTarget(Resource target)
     {
         mTarget = target;
@@ -138,12 +142,24 @@ public class Collect : Action
                 return;
             }
         }
-        float amount = mActer.mExchangeSpeed / 49f; //default exchange speed is too fast
-        //cant collect 0.01 or less
-        if (amount < 0.01)
-        {
-            amount = 0.011f;
-        }
+		//update the progress and continue if its a full cycle
+		int amount = 0;
+		if (mProgress >= 100)
+		{
+			amount = 1;
+			mProgress = 0f;
+		}
+		else
+		{
+			mProgress += mActer.mExchangeSpeed / 0.5f; //50 cycles to add one
+			return;
+		}
+        //int amount = mActer.mExchangeSpeed / 49f; //default exchange speed is too fast
+        ////cant collect 0.01 or less
+        //if (amount <= 0)
+        //{
+        //    amount = 0.011f;
+        //}
         //does the resource have enough to give?
         if ( amount > mTarget.mAmount )
         {
@@ -160,8 +176,8 @@ public class Collect : Action
             act_item = mActer.getItemOfType(mTarget.mType);
         }
         //does the acter have enough space to recieve item?
-        float invsize = mActer.getInventorySize();
-        float invcap = mActer.getInventory().mCapacity;
+        int invsize = mActer.getInventorySize();
+        int invcap = mActer.getInventory().mCapacity;
         if (  invsize + amount > invcap )
         {
             //acter doesnt have emough space
@@ -173,10 +189,12 @@ public class Collect : Action
         act_item.mAmount += amount;
         mTarget.mAmount -= amount;
     }
+
     private void getActer()
     {
         mActer = GetComponentInParent<Unit>();
     }
+
     /*private void returnToStockpile()
     {
         Item item = mActer.getItemOfType(mTarget.mType); 

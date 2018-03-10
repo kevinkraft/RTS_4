@@ -28,12 +28,14 @@ public class Eat : Action
     {
         base.Awake();
     }
+
     public override void Start()
     {
         getActer();
         if (!mActer)
             Debug.LogError("No acter set.");
     }
+
     public override void Update()
     {
         //is the units hunger almost zero? Then stop
@@ -74,7 +76,7 @@ public class Eat : Action
             Debug.Log("Stockpile has no food, Need to implement Region so that units can search for food sources.");
         }*/
 
-        if ( mActer.getResource(GameTypes.ItemType.Food,5f) )
+        if ( mActer.getResource(GameTypes.ItemType.Food, 5) )
         {
             //unit has some food
             //Debug.Log("unit has some food");
@@ -100,7 +102,7 @@ public class Eat : Action
     {
         //Debug.Log("Eating the food in the inventory");
         //how much food is needed?
-        float amount = mActer.getHunger() / Globals.UNIT_FOOD_HUNGER_VALUE;
+		int amount = (int) (mActer.getHunger() / Globals.UNIT_FOOD_HUNGER_VALUE);
         //does the unit have enough food?
         Item item = mActer.getItemOfType(GameTypes.ItemType.Food);
         if (!item)

@@ -17,12 +17,14 @@ public class Construct : Action
     {
         base.Awake();
     }
+
     public override void Start()
     {
         getActer();
         if (!mActer || !mTarget)
             Debug.LogError("No acter and/or target set.");
     }
+
     public override void Update()
     {
         //is it dead yet?
@@ -33,15 +35,15 @@ public class Construct : Action
             return;
         }
         //does the target need resources
-       KeyValuePair<GameTypes.ItemType,float> res_needed = mTarget.neededResource();
-        if ( !res_needed.Equals(new KeyValuePair<GameTypes.ItemType,float>()) )
+       KeyValuePair<GameTypes.ItemType,int> res_needed = mTarget.neededResource();
+        if ( !res_needed.Equals(new KeyValuePair<GameTypes.ItemType,int>()) )
         {
             //resources are needed, send Unit to get them
             if (mActer.getResource(res_needed.Key, res_needed.Value))
             {
                 //unit has the resource, give the right amount to the Construction
                 Item item = mActer.getItemOfType(res_needed.Key);
-                float amount = 0;
+                int amount = 0;
                 if (!item)
                     Debug.LogError("The acter doesn't have the Item. This shouldn't be possible.");
                 //if the unit has more than is needed then set to the needed amount
@@ -92,10 +94,12 @@ public class Construct : Action
     {
         return string.Format("Construct: {0}\n", mTarget.mName);
     }
+
     public void setTarget(Construction target)
     {
         mTarget = target;
     }
+
     public void setTarget(Vector3 loc)
     {
         Debug.Log("Not implemented yet.");

@@ -58,18 +58,22 @@ public class Building : EntityAction
         //see Unit.garrison(Building b)
         mUnitInventory.addUnit(unit);
     }
+
     public int getUnitInventorySize()
     {
         return mUnitInventory.getSize();
     }
+
     public UnitInventory getUnitInventory()
     {
         return mUnitInventory;
     }
+
     public List<Unit> getGarrisonedUnits()
     {
         return mUnitInventory.getUnits();
     }
+		
     public void removeUnit(Unit unit)
     {
         //DO NOT CALL THIS FROM UNIT
@@ -77,11 +81,13 @@ public class Building : EntityAction
         mUnitInventory.removeUnit(unit);
         unit.ungarrisonByBuilding();
     }
+
     public void removeUnitByUnit(Unit unit)
     {
         //remove unit from the garrison and doesnt deal with the units garrsion info
         mUnitInventory.removeUnit(unit);
     }
+
     public void ungarrison()
     {
         //ungarrisons all units

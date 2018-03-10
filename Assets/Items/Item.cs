@@ -9,7 +9,7 @@ public class Item : Selectable
     
     //public members
     public GameTypes.ItemType mType;
-    public float mAmount;
+    public int mAmount;
     //public bool mHeld;
 
     //-------------------------------------------------------------------------------------------------

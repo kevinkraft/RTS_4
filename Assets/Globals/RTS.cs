@@ -59,15 +59,15 @@ namespace RTS
         public static int RESOURCE_DEFAULT_AMOUNT { get { return 1000; } }
 
         //Materials needed for Construction types
-        public static Dictionary<GameTypes.ItemType, float> MAINHUT_CONSTRUCTION_MATERIALS { get { return new Dictionary<GameTypes.ItemType, float>()
+        public static Dictionary<GameTypes.ItemType, int> MAINHUT_CONSTRUCTION_MATERIALS { get { return new Dictionary<GameTypes.ItemType, int>()
         {
             {GameTypes.ItemType.Wood, 50}
         }; } } //default =50
-        public static Dictionary<GameTypes.ItemType, float> STOCKPILE_CONSTRUCTION_MATERIALS { get { return new Dictionary<GameTypes.ItemType, float>()
+        public static Dictionary<GameTypes.ItemType, int> STOCKPILE_CONSTRUCTION_MATERIALS { get { return new Dictionary<GameTypes.ItemType, int>()
         {
             {GameTypes.ItemType.Wood, 100} //default=100
         }; }}
-        public static Dictionary<GameTypes.ItemType, float> FARM_CONSTRUCTION_MATERIALS { get { return new Dictionary<GameTypes.ItemType, float>()
+        public static Dictionary<GameTypes.ItemType, int> FARM_CONSTRUCTION_MATERIALS { get { return new Dictionary<GameTypes.ItemType, int>()
         {
             {GameTypes.ItemType.Wood, 30} //default=30
         }; }}
@@ -95,6 +95,7 @@ namespace RTS
 
         //visible entity list
         private static List<Entity> mVisibleEntities = new List<Entity>();
+
         public static void addVisibleEntity(Entity ent)
         {
             foreach (Entity inent in mVisibleEntities)
@@ -107,6 +108,7 @@ namespace RTS
             }
             mVisibleEntities.Add(ent);
         }
+
         public static void removeVisibleEntity(Entity ent)
         {
             bool in_list = false;
@@ -122,6 +124,7 @@ namespace RTS
             }
             mVisibleEntities.Remove(ent);
         }
+
         public static List<Entity> getVisibleEntities()
         {
             return mVisibleEntities;
@@ -137,22 +140,27 @@ namespace RTS
         {
             return mGameObjectList.getAction(act_name);
         }
+
         public static GameObject getItem(string item_name)
         {
             return mGameObjectList.getItem(item_name);
         }
+
         public static GameObject getMenu(string menu_name)
         {
             return mGameObjectList.getMenu(menu_name);
         }
+
         public static GameObject getResource(string res_name)
         {
             return mGameObjectList.getResource(res_name);
         }
+
         public static GameObject getUnit(string unit_name)
         {
             return mGameObjectList.getUnit(unit_name);
         }
+
         public static GameObject getBuilding(string b_name)
         {
             GameObject go = mGameObjectList.getBuilding(b_name);
@@ -160,14 +168,17 @@ namespace RTS
                 Debug.LogError(string.Format("Building name {0} not found", b_name));
             return go;
         }
+
         public static GameObject getConstruction(string c_name)
         {
             return mGameObjectList.getConstruction(c_name);
         }
+
         public static GameObject getMap(string m_name)
         {
             return mGameObjectList.getMap(m_name);
         }
+
 		public static GameObject getRegion(string r_name)
 		{
 			return mGameObjectList.getRegion(r_name);
@@ -234,7 +245,7 @@ namespace RTS
         public static Item initItem(GameTypes.ItemType type, Transform parent)
         {
             Item item = GameObject.Instantiate(getItem(type.ToString()), parent).GetComponent<Item>();
-            item.mAmount = 0f;
+            item.mAmount = 0;
             item.mType = type;
             return item;
 

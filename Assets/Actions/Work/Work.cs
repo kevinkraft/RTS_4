@@ -16,6 +16,7 @@ public class Work : Action
     {
         base.Awake();
     }
+
     public override void Start()
     {
         getActer();
@@ -33,6 +34,7 @@ public class Work : Action
 			mTarget.addWorker( mActer );
 		}
     }
+
     public override void Update()
     {
         //is it dead yet?
@@ -62,6 +64,7 @@ public class Work : Action
         Vector3 direction = mActer.pointOfTouchingBounds(mTarget);
         mActer.moveTo(direction, false);
     }
+
 	public virtual void OnDestroy()
 	{
 		//remove this worker from the WorkedBuilding worker container
@@ -77,6 +80,7 @@ public class Work : Action
     {
         return string.Format("Work: {0}\n", mTarget.mName);
     }
+
     public void setTarget(WorkedBuilding target)
     {
         mTarget = target;
@@ -110,8 +114,8 @@ public class Work : Action
             //{
 				//clear the unit inventory of everything but the required item
 
-            float invspace = mActer.getInventoryFreeSpace();
-            mActer.exchangeWith(mTarget, mTarget.getCreateItemType(), -1f*invspace);
+            int invspace = mActer.getInventoryFreeSpace();
+            mActer.exchangeWith(mTarget, mTarget.getCreateItemType(), -1*invspace);
             //}
             return;
         }

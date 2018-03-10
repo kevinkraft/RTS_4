@@ -18,7 +18,7 @@ public class WorkedBuilding : Building
     private float mProgress = 0f;
     private float mMaxProgress = 100f;
     private GameTypes.ItemType mCreateItemType = GameTypes.ItemType.Unknown;
-    private float mCreateItemAmount = 5;
+    private int mCreateItemAmount = 5;
 	private UnitInventory mWorkers;
 
     //-------------------------------------------------------------------------------------------------
@@ -57,20 +57,21 @@ public class WorkedBuilding : Building
 		if ( getMaxWorkers() > getNWorkers() )
 			mWorkers.addUnit(worker);
 	}
+
 	public float displayProgress()
     {
         return 100f * mProgress / mMaxProgress;
     }
     
-    public void doCycle(float amount = 0.1f)
+    public void doCycle(float prog = 0.1f)
     {
         //is the progress bar full?
         if (mProgress >= mMaxProgress)
         {
             //yes its full, does it have space for item?
-            float invsize = getInventorySize();
-            float invcap = getInventory().mCapacity;
-            float iamount = mCreateItemAmount;
+            int invsize = getInventorySize();
+            int invcap = getInventory().mCapacity;
+            int iamount = mCreateItemAmount;
             if (isInventoryFull())
             {
                 return;
@@ -98,25 +99,29 @@ public class WorkedBuilding : Building
             return;
         }
         //to be called from the Work Action 
-        mProgress += amount;
-
+        mProgress += prog;
     }
+
     public GameTypes.ItemType getCreateItemType()
     {
         return mCreateItemType;
     }
+
 	public int getMaxWorkers()
 	{
 		return mWorkers.mCapacity;
 	}
+
 	public int getNWorkers()
 	{
 		return mWorkers.getSize();
 	}
+
     public float getProgress()
     {
         return mProgress;
     }
+
 	public bool needsWorkers()
 	{
 		if ( getNWorkers() < getMaxWorkers() )
@@ -124,10 +129,12 @@ public class WorkedBuilding : Building
 		else
 			return false;
 	}
+
 	public void removeWorker(Unit worker)
 	{
 		mWorkers.removeUnit(worker);
 	}
+
     public void setProgress(float p)
     {
         mProgress = p;

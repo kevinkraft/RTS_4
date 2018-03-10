@@ -25,15 +25,15 @@ public class ExchangeMenu : Menu
     //private EntityAction mTarget;
     private bool mMadeSelection = false;
     private bool mPopulated = false;
-    private Dictionary<GameTypes.ItemType,float> mExchangeList = new Dictionary<GameTypes.ItemType, float>();
-    private float mUserAmount;
+    private Dictionary<GameTypes.ItemType,int> mExchangeList = new Dictionary<GameTypes.ItemType, int>();
+    private int mUserAmount;
     private bool mCancelled = false;
     private List<string> mOptStrings;
-    private Dictionary<GameTypes.ItemType, KeyValuePair<float, float>> mOptDict;
+    private Dictionary<GameTypes.ItemType, KeyValuePair<int, int>> mOptDict;
     private GameTypes.ItemType mChoiceType = GameTypes.ItemType.Unknown;
-    private float mChoiceMin;
-    private float mChoiceMax;
-    private float mChoiceValue;
+    private int mChoiceMin;
+    private int mChoiceMax;
+    private int mChoiceValue;
 
     //-------------------------------------------------------------------------------------------------
     // unity methods
@@ -51,6 +51,7 @@ public class ExchangeMenu : Menu
         //accept the current exchange list and proceed with the action
         mMadeSelection = true;
     }
+
     public void addChoice()
     {
         //Debug.Log(mChoiceValue.ToString());
@@ -68,13 +69,15 @@ public class ExchangeMenu : Menu
         numberFieldSet("0");
 
     }
+
     public void cancelled()
     {
-        mExchangeList = new Dictionary<GameTypes.ItemType, float>();
+        mExchangeList = new Dictionary<GameTypes.ItemType, int>();
         mMadeSelection = true;
         mCancelled = true;
         clear();
     }
+
     public void clear()
     {
         mMadeSelection = false;
@@ -86,6 +89,7 @@ public class ExchangeMenu : Menu
         gameObject.SetActive(false);
         mInUse = false;
     }
+
     public void dropdownChanged()
     {
         //get the chosen string
@@ -114,30 +118,35 @@ public class ExchangeMenu : Menu
         //Debug.Log(mChoiceMax.ToString());
 
     }
-    public Dictionary<GameTypes.ItemType, float> getExchangeList()
+
+    public Dictionary<GameTypes.ItemType, int> getExchangeList()
     {
         //return a cloned dictionary 
-        Dictionary<GameTypes.ItemType, float> fdict = new Dictionary<GameTypes.ItemType, float>();
+        Dictionary<GameTypes.ItemType, int> fdict = new Dictionary<GameTypes.ItemType, int>();
         //Debug.Log("size of exchange list in menu is " + mExchangeList.Count.ToString());
         if (mMadeSelection)
             fdict = mExchangeList;
-        Dictionary<GameTypes.ItemType, float> cdict = new Dictionary<GameTypes.ItemType, float>(fdict);
+        Dictionary<GameTypes.ItemType, int> cdict = new Dictionary<GameTypes.ItemType, int>(fdict);
         //clear();
         return cdict;
 
     }
+
     public bool hasMadeSelection()
     {
         return mMadeSelection;
     }
+
     public bool isCancelled()
     {
         return mCancelled;
     }
+
     public bool isPopulated()
     {
         return mPopulated;
     }
+
     /*public void numberFieldChanged(string new_num)
     {
         float num = float.Parse(new_num);
@@ -147,9 +156,11 @@ public class ExchangeMenu : Menu
         //reset the text
         mNumberField.text = clamped.ToString();
     }*/
+	
     public void numberFieldSet(string new_num)
     {
-        float num = float.Parse(new_num);
+		//Debug.Log(new_num);
+        int num = int.Parse(new_num);
         //Debug.Log(string.Format("Given number {0}", num));
         //Debug.Log(string.Format("min number {0}", mChoiceMin));
         //Debug.Log(string.Format("max number {0}", mChoiceMax));
@@ -163,6 +174,7 @@ public class ExchangeMenu : Menu
         mNumberField.text = num.ToString();
         mChoiceValue = num;
     }
+
     public void populate(EntityAction acter, EntityAction target)
     {
         gameObject.SetActive(true);
@@ -172,17 +184,17 @@ public class ExchangeMenu : Menu
         //List<string> act_opts = new List<string> { "Item1", "Item2", "Item3", "Item4" };
         //mItemDropdown.AddOptions(act_opts);
         //make  lsit of potential options
-        Dictionary<GameTypes.ItemType, float> act_items = acter.getInventoryDictionary();
-        Dictionary<GameTypes.ItemType, float> tar_items = target.getInventoryDictionary();
-        Dictionary<GameTypes.ItemType, KeyValuePair<float, float>> opts_dict = new Dictionary<GameTypes.ItemType, KeyValuePair<float, float>>();
-        KeyValuePair<float, float> temp_kp = new KeyValuePair<float, float>();
-        foreach (KeyValuePair<GameTypes.ItemType, float> it in act_items )
+        Dictionary<GameTypes.ItemType, int> act_items = acter.getInventoryDictionary();
+        Dictionary<GameTypes.ItemType, int> tar_items = target.getInventoryDictionary();
+        Dictionary<GameTypes.ItemType, KeyValuePair<int, int>> opts_dict = new Dictionary<GameTypes.ItemType, KeyValuePair<int, int>>();
+        KeyValuePair<int, int> temp_kp = new KeyValuePair<int, int>();
+        foreach (KeyValuePair<GameTypes.ItemType, int> it in act_items )
         {
             if ( !opts_dict.ContainsKey(it.Key) )
             {
                 //the opt dict doesnt already contain this key
                 //get the max value which is how much the acter can give
-                temp_kp = new KeyValuePair<float, float>(0f, it.Value);
+                temp_kp = new KeyValuePair<int, int>(0, it.Value);
                 opts_dict.Add(it.Key, temp_kp);
             }
             else
@@ -191,17 +203,17 @@ public class ExchangeMenu : Menu
             }
         }
         //now fill the min value with the target items
-        foreach (KeyValuePair<GameTypes.ItemType, float> it in tar_items)
+        foreach (KeyValuePair<GameTypes.ItemType, int> it in tar_items)
         {
             if (opts_dict.ContainsKey(it.Key))
             {
                 //the acter also has this item type
-                opts_dict[it.Key] = new KeyValuePair<float, float>(-1f*it.Value, opts_dict[it.Key].Value);
+                opts_dict[it.Key] = new KeyValuePair<int, int>(-1*it.Value, opts_dict[it.Key].Value);
             }
             else
             {
                 //the acter didnt contain this item and we need to make a ew entry
-                temp_kp = new KeyValuePair<float, float>(-1f*it.Value, 0f);
+                temp_kp = new KeyValuePair<int, int>(-1*it.Value, 0);
                 opts_dict.Add(it.Key, temp_kp);
             }
         }
@@ -211,7 +223,7 @@ public class ExchangeMenu : Menu
         int i = 0;
         foreach (GameTypes.ItemType type in opts_dict.Keys)
         {
-            opt_strings.Add( string.Format("{0}({1:0}:{2:0})",type.ToString(), opts_dict[type].Key, opts_dict[type].Value) );
+            opt_strings.Add( string.Format("{0}({1}:{2})",type.ToString(), opts_dict[type].Key, opts_dict[type].Value) );
             if (i==0)
                 first_opt = type;
             i++;
@@ -233,11 +245,12 @@ public class ExchangeMenu : Menu
         transform.SetAsLastSibling();
         mPopulated = true;
     }
+
     public void removeChoice()
     {
         //remove the last element from the choice dict
         GameTypes.ItemType rmtype = GameTypes.ItemType.Unknown;
-        foreach (KeyValuePair<GameTypes.ItemType,float> entry in mExchangeList)
+        foreach (KeyValuePair<GameTypes.ItemType,int> entry in mExchangeList)
         {
             rmtype = entry.Key;
         }
@@ -255,13 +268,13 @@ public class ExchangeMenu : Menu
     {
         //looks at the ExchangeList and updates the display accordingly
         string display_text = "";
-        foreach (KeyValuePair<GameTypes.ItemType,float> entry in mExchangeList)
+        foreach (KeyValuePair<GameTypes.ItemType,int> entry in mExchangeList)
         {
             float eval = entry.Value;
             if (eval >= 0)
-                display_text += string.Format("Give {0:0.00} {1}\n", eval, entry.Key.ToString());
+                display_text += string.Format("Give {0} {1}\n", eval, entry.Key.ToString());
             else if (eval < 0)
-                display_text += string.Format("Take {0:0.00} {1}\n", -1*eval, entry.Key.ToString());
+                display_text += string.Format("Take {0} {1}\n", -1*eval, entry.Key.ToString());
         }
         mDisplayText.text = display_text;
     }

@@ -3,7 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using RTS;
 
+//Version 0.7
+
 //To Do:
+// * Make Item amount to integers instead of floats
+//   * The purpose of this is to make operations simpler and remove a few bugs
+//   * Change the Item class
+//   * Change the actions that involve items
+//     * The rate of collection will be determined by the Units work speed
+//     * Same for exchange action.
+//   * Also need to update the UI that allows floats to be given
 // * Implement Trade
 //   * Add Stone, so there is something to trade
 //     * add drop rates for adding various Resources when a new region is made
@@ -21,49 +30,32 @@ using RTS;
 //   * Implement Vehicles
 //   * Add a Cart class
 //   * Add a WorkedProdBuilding for making carts
-// * Eat Action
-//   * base action(done)
-//   * need to implement Region, for checking available food(done)
-//   * If there is no food in the stockpile the units can do anything as the Eat action is stuck at the top(done)
-//     * Need to implement region and Resource list(done)
-// * Explore Action(done)
-//   * When the user click an invalid position, i.e outside the map the Unit should go to the(done)
-//     nearest map section without a region(done)
-//   * Need to implement a GridMap, which is not part of Player that knows which Region spaces(done) 
-//     are empty and where to send the Unit(done)
-//     * This will need to be a WorldManager(done)
-//   * When the Unit enters the Empty region a new Region is made(done)
 // * Need to add Town to the GameObjectsList so that they can be instantiated
 //   * Currently there is no way to start a new town
 // * Add a home Town attribute to Units
 //   * In this way we can always check why they are loyal to, when Loyalty is implemented
 //   * We can always check if they will answer commands from the user and from the leader of what ever
 //     town or region they are in
+// * Equipment
+//   * A child class of Inventory will be called EquipmentInventory
+//   * The Units mInventory attribute will be replaced with an EquiptmentInventory
+//   * A EquipItem also needs to be added
+//     * A child class of item that changes the attributes of a Unit when it is equpped
+//   * The EquipInventory has slots where things can be placed
+//   * Adding an EquipItem will result in the units stats being changed
+//   * Unequipping stops the item from being actively equipped and removes its benefits.
+//   * Removing the item from the inventory when it is equipped causes the item to also be unequipped.
+//   * Add a button to the unit item display menu that says equip for these items
+//   * Also should add an Equip tab to the sidebar menu.
+// * StoneSpear class
+//   * It inherits from Weapon, that inherits from EquipItem.
+//   * It is made in a specific WorkedBuilding called a SpearWorkshop
+//   * When equipped it increases attack.
+//   * I should add a visual fr having a weapon equipped
 // * QUALITY OF LIFE
-//   * Implement rectangle select(done)
-//     * Giving the same action to each entity selected(done)
-//     * implement the actual selection(done)
-//       * need list of visible entities (its in ObjectManager, done)
-//       * need a UI box for selection (done)
-//       * Need to loop through the visible entities list and see if any are in the box(done)
-//       * There might be an issue with selecting through a menu, cant test this until I (ok)
-//         fix the left and right clicking (yes you can, it might be ok)
-//     * Will need a list of selected entities(done)
-//     * Will need to cancel the info menu display(done)
-//       * maybe show a new menu which gives options for the group(nothing to add yet)
-//     * Will need to loop through the EntitiyActions and make the right(done)
-//       action for each one(done)
-//     * probably need to prevent multiple units doing an exchange(menus are made in order, ok)
 //   * Icons
-//     * to show idle units(done)
 //     * to show hungry units
 //     * to show units taking damage
-//     * Icons above worked buildings to show that no one is working them(done)
-//       * for this we need to fix the worked buildings(done)
-//         * the building needs to know who is working it(done)
-//           * and needs to know when they stop working it(done)
-//         * the building needs to know how many workers it can have(ok)
-//         * The workers need to know where they work, I think this is already part of the work action(done)
 //   * Show number of selected units with rectangle select
 //     * Maybe add this to the message bar when you make it
 //   * Message Bar
@@ -99,6 +91,7 @@ using RTS;
 //Problems
 // * PERFORMANCE
 //   * After playing for awhile the game gets impossibly slow
+//     * I havent seen this problem in a ling time.
 //     * Maybe its because the other towns stockpile was destroyed? (maybe, added a fix to deal with this)
 //     * I'm fixing dead entities in the EntityContainers first (done)
 //       * Removed dead entities from EntityContainer, but not tested(fixed, removed properly)
@@ -107,12 +100,8 @@ using RTS;
 //         * delete town if empty, delete units if there are units but no buildings and no other town(done)
 //     * I played the game for ages with a few hundred units and it didnt slow down(ok)
 // * GENERAL: 
-//   * The same unit that initially explored a region then explores the same region again and it overlaps(fixed)
 //   * Rectangle select stopped working after I selected all units
 //   * Town isn't setting stockpile to be a building of type Stockpile
-//   * The cancel button on the ExchangeMenu stops it from working entirely(fixed)
-//     * Can reproduce, happens as soon as you press the cancel button(fixed)
-//     * I had to set mCancelled = false when populating the menu (ok)
 //   * When constructing, Unit get stuck at the stockpile, removng and adding an item to their inventories
 //     * Its something to do with the Construction no longer needing any items
 //     * I can reproduce but its hard to
@@ -121,28 +110,14 @@ using RTS;
 //     * I think it was to do with small amounts oscillating around zero, so the items were being removed and added again
 //       * I may have fixed it by setting the 0.01 threshold to 0.07 instead, couldnt reproduce the bug again
 //       * This may have fixed the problem, but it caused problems elsewhere so I had to change it back
-//   * The PopMenu doesnt appear properly when you first right click(fixed)
-//     * Its fine after the first time(fixed)
-//     * The problem was with setting the gameObject to false at Start(ok)
 //   * Sometimes the OK button in the ExchangeMenu gets stuck and does nothing
 //     * I've reproduced the problem twice but not sure how I reproduced it.
 //     * Something to do with switching the selected entity, or clicking out of the ExchangeMenu before its finished
-//   * The units dont get very close to the resources when you tell them to move to them(fixed)
-//     * problem with Entity.pointOfTouchingBounds(fixed)
-//       * need a better way of telling them where to go so that they dont collide(fixed)
-//     * the resources models weren't centered in their game object position(ok)
-//   * If a move action is interrupted by another action, the unit finished that action and goes back to moving it is facing the wrong direction(ok)
-//     * This is because the units Move action mRotating bool has already been set to true, the unit has already finished the ratation part of its move(ok)
-//       so it doesnt need to rotate again when it goes back to the move action.(fixed)
-//     * I reset the destination rotation in each cycle of Movement Update.(ok)
 //   * Garrison/Procreate bug
 //     * Units don't return to procreate action after eating
 //     * They also dont take account of the stockpile bounding box
  //      * this is because the garrisoned units have zero bounds as their models dont actually exist
 // * MINOR
-//   * Buildings mTown is never set(fixed)
-//     * this doesnt even matter for now(fixed)
-//     * there was no call to base.Start() in building (ok)
 //   * When garrisoned in a building, if you tell the unit to garrison in another building it 
 //     walks into the othe buildings model, it doesnt take the bounds into account when it moves to
 //     the other building

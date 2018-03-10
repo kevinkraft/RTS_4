@@ -8,7 +8,7 @@ public class Resource : Entity
 
     //private members
     public GameTypes.ItemType mType;
-    public float mAmount;
+    public int mAmount;
 
     //-------------------------------------------------------------------------------------------------
     // unity methods
@@ -19,7 +19,7 @@ public class Resource : Entity
             return;
         base.Update();
         //it its empty, set it as dead
-        if ( mAmount < 0f || Mathf.Abs(mAmount) < 0.01 )
+        if ( mAmount <= 0 )
         {
             mDead = true;
         }

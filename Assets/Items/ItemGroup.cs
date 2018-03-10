@@ -8,7 +8,7 @@ public class ItemGroup : MonoBehaviour
 
     //public members
     public List<Item> mItems = new List<Item>();
-    public float mCapacity; //-1 is no cap
+    public int mCapacity; //-1 is no cap
 
     //private members
 
@@ -22,12 +22,12 @@ public class ItemGroup : MonoBehaviour
     }
     private void Update()
     {
-        //remove an item if it has less than 0.01
+        //remove an item if it has 0 or less
         GameTypes.ItemType remove_type = GameTypes.ItemType.Unknown;
         int i = 0;
         foreach ( Item item in mItems)
         {
-            if (item.mAmount < 0.01)
+            if (item.mAmount <= 0)
             {
                 remove_type = item.mType;
                 break;
@@ -44,16 +44,17 @@ public class ItemGroup : MonoBehaviour
     //-------------------------------------------------------------------------------------------------
     // public methods
     //-------------------------------------------------------------------------------------------------
-    public Dictionary<GameTypes.ItemType, float> getInventoryDictionary()
+    public Dictionary<GameTypes.ItemType, int> getInventoryDictionary()
     {
         //returns a dictionary of the group
-        Dictionary<GameTypes.ItemType, float> rdict = new Dictionary<GameTypes.ItemType, float>();
+        Dictionary<GameTypes.ItemType, int> rdict = new Dictionary<GameTypes.ItemType, int>();
         foreach (Item item in mItems)
         {
             rdict.Add(item.mType, item.mAmount);
         }
         return rdict;
     }
+
     public bool addItem(Item item)
     {
         if (getSize() + item.mAmount > mCapacity)
@@ -67,14 +68,16 @@ public class ItemGroup : MonoBehaviour
             return true;
         }
     }
-    public float getFreeSpace()
+
+    public int getFreeSpace()
     {
-        float fs = mCapacity - getSize();
-        if (fs > 0.01)
+        int fs = mCapacity - getSize();
+        if (fs > 0)
             return fs;
         else
-            return 0f;
+			return 0;
     }
+
     public Item getItemOfType(GameTypes.ItemType type)
     {
         foreach (Item item in mItems)
@@ -84,23 +87,26 @@ public class ItemGroup : MonoBehaviour
         }
         return null;
     }
-    public float getSize()
+
+    public int getSize()
     {
         //returns the sum of the sizes of everything in the group
-        float size = 0f;
+        int size = 0;
         foreach (Item item in mItems)
         {
             size += item.mAmount;
         }
         return size;
     }
+
     public bool isFull()
     {
-        if (Mathf.Abs(mCapacity - getSize()) < 0.01)
+        if ( mCapacity - getSize() <= 0)
             return true;
         else
             return false;
     }
+
     public string print()
     {
         //returns a string with one item on each line showing the name and amount
@@ -109,10 +115,11 @@ public class ItemGroup : MonoBehaviour
             return "Empty";
         foreach ( Item item in mItems )
         {
-            text += string.Format("{0} : {1:0.00}\n", item.mType.ToString(), item.mAmount);
+            text += string.Format("{0} : {1}\n", item.mType.ToString(), item.mAmount);
         }
         return text;
     }
+
     public void wipe()
     {
         //deletes the Items, then resets the Item list to be empty

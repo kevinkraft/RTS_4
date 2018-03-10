@@ -14,7 +14,7 @@ public class Exchange : Action
     //public members
     public Unit mActer;
     public EntityAction mTarget;
-    public Dictionary<GameTypes.ItemType, float> mExchangeList = new Dictionary<GameTypes.ItemType, float>();
+    public Dictionary<GameTypes.ItemType, int> mExchangeList = new Dictionary<GameTypes.ItemType, int>();
 
     //private members
     private GameTypes.ItemType mDoneType;
@@ -25,6 +25,7 @@ public class Exchange : Action
     private int mCyclesToSkip = 2;
     private int mCycleCounter = 0;
     private bool mQForMenu = false;
+	private float mCycleProgress = 0f;
 
     //-------------------------------------------------------------------------------------------------
     // unity methods
@@ -41,6 +42,7 @@ public class Exchange : Action
                 Debug.LogError("Didn't find player.");
         }
     }
+
     public override void Start()
     {
         getActer();
@@ -67,6 +69,7 @@ public class Exchange : Action
             mQForMenu = true;
         }
     }
+
     public override void Update()
     {
         //Debug.Log(string.Format("running exchange. mQForMenu {0}", mQForMenu.ToString()));
@@ -155,25 +158,28 @@ public class Exchange : Action
     public override string print()
     {
 		string text = "";
-		foreach (KeyValuePair<GameTypes.ItemType,float> pair in mExchangeList)
+		foreach (KeyValuePair<GameTypes.ItemType,int> pair in mExchangeList)
 		{
 			text += string.Format("Exchange {0} {1}\n", pair.Key.ToString(), pair.Value.ToString() );
 		}
 		return text;
         //return "Exchange\n";
     }
-    public void setExchangeList(Dictionary<GameTypes.ItemType, float> list)
+
+    public void setExchangeList(Dictionary<GameTypes.ItemType, int> list)
     {
         mExchangeList = list;
         mWaitForMenu = false;
         
     }
-    public void setExchangeItem(GameTypes.ItemType type, float amount)
+
+    public void setExchangeItem(GameTypes.ItemType type, int amount)
     {
-        Dictionary<GameTypes.ItemType, float> list = new Dictionary<GameTypes.ItemType, float>();
+        Dictionary<GameTypes.ItemType, int> list = new Dictionary<GameTypes.ItemType, int>();
         list.Add(type, amount);
         setExchangeList(list);
     }
+
     public void setTarget(EntityAction target)
     {
         mTarget = target;
@@ -185,6 +191,18 @@ public class Exchange : Action
     private bool checkAndExchangeItems(EntityAction giver, EntityAction getter, GameTypes.ItemType type, float cycle_amount)
     //checks everything and moves some of one item from the giver to the getter
     {
+		//check the progress
+		mCycleProgress += cycle_amount;
+		int amount = 0;
+		if (mCycleProgress >= 100)
+		{
+			amount = 1;
+			mCycleProgress = 0f;
+		}
+		else
+		{
+			return false;
+		}
         //does the acter have the item?
         Item act_item = giver.getItemOfType(type);
         if (!act_item)
@@ -195,9 +213,9 @@ public class Exchange : Action
             return false;
         }
         //does the acter have enough of the item
-        if (act_item.mAmount < cycle_amount)
+		if (act_item.mAmount < amount)
         {
-            cycle_amount = act_item.mAmount;
+            amount = act_item.mAmount;
             //Debug.Log("acter doesnt have enough of the item, adjusting amount");
         }
         //does the target have the item to receive?
@@ -210,13 +228,13 @@ public class Exchange : Action
             //Debug.Log("target doesnt have the item");
         }
         //does the target have enough space for this item
-        float cap = getter.getInventory().mCapacity;
-        float invsize = getter.getInventorySize();
-        if (invsize + cycle_amount > cap)
+        int cap = getter.getInventory().mCapacity;
+        int invsize = getter.getInventorySize();
+        if (invsize + amount > cap)
         {
-            //target doesnt have space, reduce the cycle amount
-            cycle_amount = cap - invsize;
-            if (cycle_amount < 0.01)
+            //target doesnt have space, reduce the amount
+            amount = cap - invsize;
+            if (amount <= 0)
             {
                 setRemoveItem(type);
                 return false;
@@ -224,15 +242,15 @@ public class Exchange : Action
             //control flow moves on if cycle amount is big enough
         }
         //target has space, add and remove the amount
-        tar_item.mAmount = tar_item.mAmount + cycle_amount;
-        act_item.mAmount = act_item.mAmount - cycle_amount;
+        tar_item.mAmount = tar_item.mAmount + amount;
+        act_item.mAmount = act_item.mAmount - amount;
         if (mExchangeList[type] >= 0)
         {
-            mExchangeList[type] = mExchangeList[type] - cycle_amount;
+            mExchangeList[type] = mExchangeList[type] - amount;
         }
         else if (mExchangeList[type] < 0)
         {
-            mExchangeList[type] = mExchangeList[type] + cycle_amount;
+            mExchangeList[type] = mExchangeList[type] + amount;
         }
 
         return false;
@@ -257,9 +275,9 @@ public class Exchange : Action
         List<GameTypes.ItemType> tlist = new List<GameTypes.ItemType>(mExchangeList.Keys);
         foreach (GameTypes.ItemType itype in tlist)
         {
-            float ival = mExchangeList[itype];
+            int ival = mExchangeList[itype];
             //check if the amount is almost zero
-            if (Mathf.Abs(ival) < 0.01)
+            if (Mathf.Abs(ival) <= 0)
             {
                 //if its zero remove from the ExchangeList
                 setRemoveItem(itype);
@@ -267,7 +285,7 @@ public class Exchange : Action
             }
             //split it into separate functions for positive and negative amounts
             //positive amount, move items from acter to target
-            float cycle_amount = mActer.mExchangeSpeed / 10f;
+            float cycle_amount = mActer.mExchangeSpeed / 0.1f;
             if (ival > 0)
             {
                 //Debug.Log("positive value");

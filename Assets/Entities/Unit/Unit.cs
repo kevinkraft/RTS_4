@@ -59,6 +59,7 @@ public class Unit : EntityAction
         //add the action to the action group component
         mActions.clearAddAction(att);
     }
+
     public void collectResource(Resource res, bool prepend = false)
     {
         //make a new collect instance as a child of the action group object
@@ -76,6 +77,7 @@ public class Unit : EntityAction
             mActions.clearAddAction(col);
         }
     }
+
     public void dropOrDumpInventory()
     {
         //drops the inventory if the stockpile is full, or dumps it to the stockpile
@@ -84,13 +86,15 @@ public class Unit : EntityAction
         else
             dumpInventory();
     }
-    public void exchangeWith(EntityAction target, GameTypes.ItemType type, float amount)
+
+    public void exchangeWith(EntityAction target, GameTypes.ItemType type, int amount)
     {
         Exchange ex = ObjectManager.initExchange(transform);
         ex.setTarget(target);
         ex.setExchangeItem(type, amount);
         mActions.prependAction(ex);
     }
+	 
     public void garrison(Building b)
     {
         b.addUnit(this);
@@ -102,6 +106,7 @@ public class Unit : EntityAction
         //gameObject.SetActive(false);
         setModelActive(false);
     }
+
     public void garrisonIn(Building b)
     {
         //make a new garrison instance as a child of the action group object
@@ -111,23 +116,28 @@ public class Unit : EntityAction
         //add the action to the action group component
         mActions.prependAction(gar);
     }
+
     public Building getGarrison()
     {
         return mGarrison;
     }
+
     public float getHunger()
     {
         return mHunger;
     }
+
     public float getMoveSpeed()
     {
         return mMoveSpeed;
     }
+
     public float getPregnancyProgress()
     {
         return mPregnancyProgress;
     }
-    public bool getResource(GameTypes.ItemType type, float amount=-1f)
+
+    public bool getResource(GameTypes.ItemType type, int amount=-1)
     {
         //tells the unit to get some of a resource. Chceks the unit inventory, if the
         //unit has none of the item it checks the stockpile and tells them to get the item from there
@@ -135,8 +145,8 @@ public class Unit : EntityAction
         //amount set to -1 means fill the inventory
 
         //what amount do we need?
-        float invcap = getInventory().mCapacity;
-        float invsize = getInventorySize();
+        int invcap = getInventory().mCapacity;
+        int invsize = getInventorySize();
         if (amount == -1 || invcap < invsize + amount)
             amount = invcap - invsize;
         
@@ -165,7 +175,7 @@ public class Unit : EntityAction
             exchangeWith(sp, type, -1*amount);
             return false;
         }
-        //stockpile doesn't have it, get the closest resource of food type
+        //stockpile doesn't have it, get the closest resource of this type
         Resource res = mTown.getRegion().getClosestResourceOfType(type, this);
         if (res)
         {
@@ -175,6 +185,7 @@ public class Unit : EntityAction
         }
         return false;
     }
+
     public float getRotateSpeed()
     {
         return mRotateSpeed;
@@ -185,22 +196,25 @@ public class Unit : EntityAction
         //process a left mouse click while this entity is selected by the player
         Debug.Log("in unit, this function does nothing yet");
     }*/
+	
     public bool isGarrisoned()
     {
         return mGarrisoned;
     }
+		
     public bool isPregnant()
     {
         return mPregnant;
     }
+
 	public bool makeInventorySpaceFor(GameTypes.ItemType itype)
 	{
 		//dumps everything in the inventory except items of a certain type
 		//return true if unit needs to return to stockpile, false other wise
-		Dictionary<GameTypes.ItemType, float> dict = getInventoryDictionary();
+		Dictionary<GameTypes.ItemType, int> dict = getInventoryDictionary();
 		Building sp = getStockpile();
 		bool new_action = false;
-		foreach ( KeyValuePair<GameTypes.ItemType,float> pair in dict )
+		foreach ( KeyValuePair<GameTypes.ItemType,int> pair in dict )
 		{
 			//skip if its the item we want
 			if ( pair.Key != itype )
@@ -212,6 +226,7 @@ public class Unit : EntityAction
 		}
 		return new_action;
 	}
+
     public void makePregnant()
     {
         if ( mGender == GameTypes.GenderType.Female && mPregnant == false)
@@ -220,6 +235,7 @@ public class Unit : EntityAction
             mPregnancyProgress = 0f;
         }
     }
+
     public void moveTo( Vector3 destination, bool clear=true )
     {
         //make a new move instance as a child of the action group object
@@ -247,6 +263,7 @@ public class Unit : EntityAction
         else
             mActions.prependAction(move);
     }
+
     public void returnToStockpile(GameTypes.ItemType type)
     {
         Item item = getItemOfType(type);
@@ -260,10 +277,12 @@ public class Unit : EntityAction
         }
         exchangeWith(getStockpile(), type, item.mAmount);
     }
+
     public void setHunger(float h)
     {
         mHunger = h;
     }
+
     public void ungarrisonSelf()
     {
         //DO NOT CALL THIS FROM BUILDING
@@ -277,6 +296,7 @@ public class Unit : EntityAction
         setModelActive(true);*/
         ungarrison();
     }
+
     public void ungarrisonByBuilding()
     {
         //DO NOT CALL THIS FROM UNIT
@@ -288,6 +308,7 @@ public class Unit : EntityAction
         */
         ungarrison();
     }
+
     public void waitAt(Vector3 destination, bool clear = true)
     {
         //make a new wait instance as a child of the action group object
@@ -323,6 +344,7 @@ public class Unit : EntityAction
         mGarrison = null;
         setModelActive(true);
     }
+
     private void updateHunger()
     {
         mHunger += Globals.UNIT_HUNGER_CYCLE_INCREASE;

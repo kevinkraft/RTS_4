@@ -10,7 +10,7 @@ public class Construction : EntityAction
     public GameTypes.BuildingType mType = GameTypes.BuildingType.Unknown;
 
     //private members
-    private Dictionary<GameTypes.ItemType, float> mMaterialsMap = new Dictionary<GameTypes.ItemType, float>();
+    private Dictionary<GameTypes.ItemType, int> mMaterialsMap = new Dictionary<GameTypes.ItemType, int>();
     private float mProgress = 0;
 
     //-------------------------------------------------------------------------------------------------
@@ -23,6 +23,7 @@ public class Construction : EntityAction
         if (isInstantiated)
             setupType();
     }
+
     private void Update()
     {
         if (!isInstantiated)
@@ -38,6 +39,7 @@ public class Construction : EntityAction
             makeBuilding();
         }
     }
+
     //-------------------------------------------------------------------------------------------------
     // public methods
     //-------------------------------------------------------------------------------------------------
@@ -45,29 +47,32 @@ public class Construction : EntityAction
     {
         return mProgress;
     }
-    public KeyValuePair<GameTypes.ItemType, float> neededResource()
+
+    public KeyValuePair<GameTypes.ItemType, int> neededResource()
     {
         if (mMaterialsMap.Count == 0)
-            return new KeyValuePair<GameTypes.ItemType, float>();
+            return new KeyValuePair<GameTypes.ItemType, int>();
         else
         {
-            foreach (KeyValuePair<GameTypes.ItemType,float> pair in mMaterialsMap)
+            foreach (KeyValuePair<GameTypes.ItemType,int> pair in mMaterialsMap)
             {
                 return pair;
             }
         }
-        return new KeyValuePair<GameTypes.ItemType, float>();
+        return new KeyValuePair<GameTypes.ItemType, int>();
     }
+
     public string printMaterialsMap()
     {
         //add entries for the items needed
         string rtext = "";
-        foreach (KeyValuePair<GameTypes.ItemType, float> pair in mMaterialsMap)
+        foreach (KeyValuePair<GameTypes.ItemType, int> pair in mMaterialsMap)
         {
-            rtext += string.Format("{0} Needed : {1:0}\n",pair.Key.ToString(),pair.Value);
+            rtext += string.Format("{0} Needed : {1}\n",pair.Key.ToString(),pair.Value);
         }
         return rtext;
     }
+
     public void setProgress(float p)
     {
         mProgress = p;
@@ -86,6 +91,7 @@ public class Construction : EntityAction
         //now remove the construction site
         mDead = true;
     }
+
     private void moveMaterials()
     {
         //take items from the inventory and remove the amounts from the material map
@@ -98,7 +104,7 @@ public class Construction : EntityAction
                 //Debug.Log("Decreasing item and materials map amounts");
                 //Debug.Log(string.Format("{0}", mMaterialsMap[item.mType]));
                 mMaterialsMap[item.mType] = mMaterialsMap[item.mType] - item.mAmount;
-                if ( mMaterialsMap[item.mType] < 0.01 )
+                if ( mMaterialsMap[item.mType] <= 0 )
                 {
                     //Debug.Log("adding item to the list of items to remove.");
                     rtypes.Add(item.mType);
@@ -114,6 +120,7 @@ public class Construction : EntityAction
                 mMaterialsMap.Remove(type);
         }
     }
+
     private void setupType()
     {
         //set the materials map based on the type
