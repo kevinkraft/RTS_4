@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using RTS;
@@ -64,7 +65,7 @@ public class Map : Selectable
     //-------------------------------------------------------------------------------------------------
     // private methods
     //-------------------------------------------------------------------------------------------------
-    private void populateResources()
+    /*private void populateResources()
     {
         //make 4 groups of Wood and Food, each with 7 instances
         //need a position and sigma of spread for each group
@@ -72,8 +73,8 @@ public class Map : Selectable
         //set constants
         float width = mRegion.getWidth();
         float hwidth = mRegion.getWidth()/2f;
-        float n_per_food_group = Mathf.Ceil(width / 40f); //about 8 for 300 width Region
-        float n_per_wood_group = Mathf.Ceil(width / 10f); //about 8 for 300 width Region
+        float n_per_food_group = Mathf.Ceil(width / 40f); 
+        float n_per_wood_group = Mathf.Ceil(width / 10f);
         float n_groups = Mathf.Ceil(width / 74f); //about 4 for 300 width Region
         float spread_max_food = width / 15f;
         float spread_max_wood = width / 7f;
@@ -119,7 +120,50 @@ public class Map : Selectable
 
         }
 
-    }
+    }*/
+
+	private void populateResources()
+	{
+		//Debug.Log("Populating region");
+		//make groups of resources based on random drop rates
+		//Food and wood have a 100% drop rate, so should always appear
+		float width = mRegion.getWidth();
+		float hwidth = mRegion.getWidth()/2f;
+		foreach (GameTypes.ItemType t in Enum.GetValues(typeof(GameTypes.ItemType)) )
+		{
+			//Debug.Log(t);
+			//check drop rate
+			if ( getRand(0,1) > Globals.RESOURCE_REGION_DROP_RATES[t]  )
+			{
+				//Debug.Log("not passed");
+				continue; //not passed
+			}
+			//Debug.Log("passed");
+			int n_per_group = Globals.RESOURCE_N_PER_GROUPS[t];
+			int n_groups = Globals.RESOURCE_N_GROUPS[t];
+			float spread_max = Globals.RESOURCE_GROUP_MAX_SPREADS[t];
+				
+			//loop to make groups
+			for (int i = 0; i < n_groups; i++)
+			{
+				//set group pos
+				float gposx = mRegion.gameObject.transform.position.x + getRand(-hwidth, hwidth);
+				float gposz = mRegion.gameObject.transform.position.z + getRand(-hwidth, hwidth);
+				//set the group spread
+				float spread = getRand(5, spread_max);
+				//loop to make Resource instances
+				for (int j=0; j < n_per_group; j++)
+				{
+					//set the individual pos
+					Vector3 pos = new Vector3(gposx + getRand(-spread, spread), 0f, gposz + getRand(-spread, spread));
+					//instantiate resources
+					Resource res = ObjectManager.initResource(pos, t, mRegion);
+				}
+			}
+
+		}
+
+	}
 
     private float getRand(float minv=0, float maxv=1)
     { 

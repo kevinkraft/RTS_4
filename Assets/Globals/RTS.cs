@@ -57,6 +57,47 @@ namespace RTS
 
         //resources
         public static int RESOURCE_DEFAULT_AMOUNT { get { return 1000; } }
+		//rates that they appear in regions
+		public static Dictionary<GameTypes.ItemType, float> RESOURCE_REGION_DROP_RATES = new Dictionary<GameTypes.ItemType, float>()
+		{
+			{GameTypes.ItemType.Unknown, 0f},
+			{GameTypes.ItemType.Food, 1f},
+			{GameTypes.ItemType.Wood, 1f},
+			{GameTypes.ItemType.Stone, 0.5f},
+			{GameTypes.ItemType.Copper, 0.2f},
+			{GameTypes.ItemType.Tin, 0.2f}
+		};
+		//number of groups of this resource
+		public static Dictionary<GameTypes.ItemType, int> RESOURCE_N_GROUPS = new Dictionary<GameTypes.ItemType, int>()
+		{
+			{GameTypes.ItemType.Unknown, 0},
+			{GameTypes.ItemType.Food, Mathf.CeilToInt(REGION_MAP_WIDTH / 74f)},
+			{GameTypes.ItemType.Wood, Mathf.CeilToInt(REGION_MAP_WIDTH / 74f)},
+		    {GameTypes.ItemType.Stone, Mathf.CeilToInt(REGION_MAP_WIDTH / 100f)},
+			{GameTypes.ItemType.Copper, Mathf.CeilToInt(REGION_MAP_WIDTH / 100f)},
+			{GameTypes.ItemType.Tin, Mathf.CeilToInt(REGION_MAP_WIDTH / 100f)}
+		};
+		//number of resources in a group, scales with region width
+		public static Dictionary<GameTypes.ItemType, int> RESOURCE_N_PER_GROUPS = new Dictionary<GameTypes.ItemType, int>()
+		{
+			{GameTypes.ItemType.Unknown, 0},
+			{GameTypes.ItemType.Food, Mathf.CeilToInt(REGION_MAP_WIDTH / 40f)},
+			{GameTypes.ItemType.Wood, Mathf.CeilToInt(REGION_MAP_WIDTH / 10f)},
+			{GameTypes.ItemType.Stone, Mathf.CeilToInt(REGION_MAP_WIDTH / 60f)},
+			{GameTypes.ItemType.Copper, Mathf.CeilToInt(REGION_MAP_WIDTH / 60f)},
+			{GameTypes.ItemType.Tin, Mathf.CeilToInt(REGION_MAP_WIDTH / 60f)},
+		};
+		//the max spread of the groups of resources
+		public static Dictionary<GameTypes.ItemType, float> RESOURCE_GROUP_MAX_SPREADS = new Dictionary<GameTypes.ItemType, float>()
+		{
+			{GameTypes.ItemType.Unknown, 0f},
+			{GameTypes.ItemType.Food, REGION_MAP_WIDTH / 15f},
+			{GameTypes.ItemType.Wood, REGION_MAP_WIDTH / 7f},
+			{GameTypes.ItemType.Stone, REGION_MAP_WIDTH / 30f},
+			{GameTypes.ItemType.Copper, REGION_MAP_WIDTH / 30f},
+			{GameTypes.ItemType.Tin, REGION_MAP_WIDTH / 30f}
+		};
+		
 
         //Materials needed for Construction types
         public static Dictionary<GameTypes.ItemType, int> MAINHUT_CONSTRUCTION_MATERIALS { get { return new Dictionary<GameTypes.ItemType, int>()
@@ -319,8 +360,9 @@ namespace RTS
     public static class GameTypes
     {
 
-        //unknown must be first
-        public enum ItemType { Unknown, Food, Wood };
+        ////unknown must be first
+		public enum ItemType { Unknown, Food, Wood, Stone, Copper, Tin };
+		//public enum ItemType {Unknown, Food};
 
         //unknown must be first
         public enum BuildingType { Unknown, MainHut, Stockpile, Farm };

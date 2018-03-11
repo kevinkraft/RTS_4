@@ -7,12 +7,12 @@ using RTS;
 
 //To Do:
 // * Make Item amount to integers instead of floats
-//   * The purpose of this is to make operations simpler and remove a few bugs
-//   * Change the Item class
-//   * Change the actions that involve items
-//     * The rate of collection will be determined by the Units work speed
-//     * Same for exchange action.
-//   * Also need to update the UI that allows floats to be given
+//   * The purpose of this is to make operations simpler and remove a few bugs(ok)
+//   * Change the Item class(done)
+//   * Change the actions that involve items(done)
+//     * The rate of collection will be determined by the Units work speed(done)
+//     * Same for exchange action.(ok)
+//   * Also need to update the UI that allows floats to be given(done)
 // * Implement Trade
 //   * Add Stone, so there is something to trade
 //     * add drop rates for adding various Resources when a new region is made
@@ -100,6 +100,8 @@ using RTS;
 //         * delete town if empty, delete units if there are units but no buildings and no other town(done)
 //     * I played the game for ages with a few hundred units and it didnt slow down(ok)
 // * GENERAL: 
+//   * Two units can explore the same Region such that two Regions are created i nthe same place
+//     * should be easy enough to fix, just add a check when finishing the Explore that the Region hasn already been explored.
 //   * Rectangle select stopped working after I selected all units
 //   * Town isn't setting stockpile to be a building of type Stockpile
 //   * When constructing, Unit get stuck at the stockpile, removng and adding an item to their inventories
@@ -158,10 +160,12 @@ public class Entity : Selectable
         else
             isInstantiated = true;
     }
+
     public override void Start()
     {
         base.Start();
     }
+
     public override void Update()
     {
         if (!isInstantiated)
@@ -176,6 +180,7 @@ public class Entity : Selectable
         //see if Entity is visible on screen
         checkModelVisible();
     }
+
     /*public void OnBecameVisible()
     {
         Debug.Log(mName + " is visible");
