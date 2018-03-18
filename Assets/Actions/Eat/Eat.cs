@@ -127,7 +127,7 @@ public class Eat : Action
 
     private bool isFinished()
     {
-        if (mActer.getHunger() < 0.01f)
+        if (mActer.getHunger() < 10f)
         {
             mComplete = true;
             return true;

@@ -24,6 +24,7 @@ public class Unit : EntityAction
     private bool mPregnant = false;
     private float mPregnancyProgress = 0f;
     private System.Random mRandomGen = new System.Random();
+	[SerializeField]
     private float mHunger = 0f;
 	private UnitStats mStats;
 

@@ -81,8 +81,9 @@ using RTS;
 //         * delete town if empty, delete units if there are units but no buildings and no other town(done)
 //     * I played the game for ages with a few hundred units and it didnt slow down(ok)
 // * GENERAL: 
-//   * The icon for a worked building with not enough workers is not being shown.
-//   * The Eat action is taking far too long.
+//   * The icon for a worked building with not enough workers is not being shown.(fixed, was a problem with a farm with its gem object off)
+//   * The Eat action is taking far too long.(fixed)
+//     * The problem was caused by rounding as I had changed item numbers to ints (ok)
 //   * Two units can explore the same Region such that two Regions are created i nthe same place
 //     * should be easy enough to fix, just add a check when finishing the Explore that the Region hasn already been explored.
 //   * Rectangle select stopped working after I selected all units
