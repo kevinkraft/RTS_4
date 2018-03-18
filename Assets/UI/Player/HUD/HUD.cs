@@ -10,6 +10,7 @@ public class HUD : MonoBehaviour
     public GUISkin mSelectBoxSkin;
     public PopMenu mPopMenu;
     public ExchangeMenu mExchangeMenu;
+	public EquipMenu mEquipMenu;
     public SelectionBox mSelectionBox;
 
     //private members
@@ -40,6 +41,10 @@ public class HUD : MonoBehaviour
         if (!mExchangeMenu)
             Debug.LogError("Can't find ExchangeMenu in HUD");
         mExchangeMenu.gameObject.SetActive(false);
+		mEquipMenu = GetComponentInChildren<EquipMenu>();
+		if (!mEquipMenu)
+			Debug.LogError("Can't find EquipMenu in HUD");
+		mEquipMenu.gameObject.SetActive(false);
 		//get the canvases
 		List<Canvas> clist = new List<Canvas>(GetComponentsInChildren<Canvas>());
 		foreach (Canvas c in clist)

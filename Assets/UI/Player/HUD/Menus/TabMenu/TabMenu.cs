@@ -7,7 +7,7 @@ using UnityEngine;
 //Notes:
 // * currently it's only setup with three tabs
 //   * to change this you'll need to alter the prefab, just save the TabPane prefab
-//     and make as many as you need, scaling the length of th etab buttons where appropriate
+//     and make as many as you need, scaling the length of the tab buttons where appropriate
 
 public class TabMenu : Menu
 {

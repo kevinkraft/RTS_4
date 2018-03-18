@@ -132,7 +132,7 @@ public class Exchange : Action
         }
         //is target in range?
         float dist = Vector3.Distance(mActer.transform.position, mTarget.transform.position);
-        if (dist < mActer.mIntrRange)
+		if (dist < mActer.getIntrRange())
         {
             doExchange();
             return;
@@ -140,7 +140,7 @@ public class Exchange : Action
         else
         {
             //is it in range of the bounds?
-            if (mActer.calculateExtentsDistance(mTarget) < mActer.mIntrRange)
+			if (mActer.calculateExtentsDistance(mTarget) < mActer.getIntrRange())
             {
                 doExchange();
                 return;
@@ -213,9 +213,9 @@ public class Exchange : Action
             return false;
         }
         //does the acter have enough of the item
-		if (act_item.mAmount < amount)
+		if (act_item.getAmount() < amount)
         {
-            amount = act_item.mAmount;
+			amount = act_item.getAmount();
             //Debug.Log("acter doesnt have enough of the item, adjusting amount");
         }
         //does the target have the item to receive?
@@ -242,8 +242,8 @@ public class Exchange : Action
             //control flow moves on if cycle amount is big enough
         }
         //target has space, add and remove the amount
-        tar_item.mAmount = tar_item.mAmount + amount;
-        act_item.mAmount = act_item.mAmount - amount;
+		tar_item.setAmount( tar_item.getAmount() + amount);
+		act_item.setAmount( act_item.getAmount() - amount);
         if (mExchangeList[type] >= 0)
         {
             mExchangeList[type] = mExchangeList[type] - amount;
@@ -285,7 +285,7 @@ public class Exchange : Action
             }
             //split it into separate functions for positive and negative amounts
             //positive amount, move items from acter to target
-            float cycle_amount = mActer.mExchangeSpeed / 0.1f;
+			float cycle_amount = mActer.getExchangeSpeed() / 0.1f;
             if (ival > 0)
             {
                 //Debug.Log("positive value");

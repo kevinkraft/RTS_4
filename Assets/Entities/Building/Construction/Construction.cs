@@ -98,18 +98,18 @@ public class Construction : EntityAction
         List<GameTypes.ItemType> rtypes = new List<GameTypes.ItemType>();
         foreach ( Item item in getInventory().mItems )
         {
-            if ( mMaterialsMap.ContainsKey(item.mType) )
+			if ( mMaterialsMap.ContainsKey(item.getType()) )
             {
                 //Debug.Log(string.Format("Item amount {0}", item.mAmount));
                 //Debug.Log("Decreasing item and materials map amounts");
                 //Debug.Log(string.Format("{0}", mMaterialsMap[item.mType]));
-                mMaterialsMap[item.mType] = mMaterialsMap[item.mType] - item.mAmount;
-                if ( mMaterialsMap[item.mType] <= 0 )
+				mMaterialsMap[item.getType()] = mMaterialsMap[item.getType()] - item.getAmount();
+				if ( mMaterialsMap[item.getType()] <= 0 )
                 {
                     //Debug.Log("adding item to the list of items to remove.");
-                    rtypes.Add(item.mType);
+					rtypes.Add(item.getType());
                 }
-                item.mAmount = 0;
+				item.setAmount(0);
                 //Debug.Log(string.Format("{0}", mMaterialsMap[item.mType]));
             }
         }
@@ -141,6 +141,10 @@ public class Construction : EntityAction
                 mMaterialsMap = Globals.FARM_CONSTRUCTION_MATERIALS;
                 mName = "Farm Construct";
                 break;
+			case GameTypes.BuildingType.SpearWorkshop:
+				mMaterialsMap = Globals.SPEARWORKSHOP_CONSTRUCTION_MATERIALS;
+				mName = "Spear Workshop Construct";
+				break;
             default:
                 Debug.LogError("Construction(Building) type not recognised");
                 break;

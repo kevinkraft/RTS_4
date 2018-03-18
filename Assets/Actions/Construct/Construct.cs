@@ -39,7 +39,8 @@ public class Construct : Action
         if ( !res_needed.Equals(new KeyValuePair<GameTypes.ItemType,int>()) )
         {
             //resources are needed, send Unit to get them
-            if (mActer.getResource(res_needed.Key, res_needed.Value))
+			getItemsForConstruction(res_needed);
+            /*if (mActer.getResource(res_needed.Key, res_needed.Value))
             {
                 //unit has the resource, give the right amount to the Construction
                 Item item = mActer.getItemOfType(res_needed.Key);
@@ -63,12 +64,12 @@ public class Construct : Action
             {
                 //unit has been given actions to go and get the resource
                 return;
-            }
+            }*/
         }
         //no resources are needed, go to the Construction and start building progress
         //is target in range?
         float dist = Vector3.Distance(mActer.transform.position, mTarget.transform.position);
-        if (dist < mActer.mIntrRange)
+		if (dist < mActer.getIntrRange())
         {
             doConstruct();
             return;
@@ -76,7 +77,7 @@ public class Construct : Action
         else
         {
             //is it in range of the bounds?
-            if (mActer.calculateExtentsDistance(mTarget) < mActer.mIntrRange)
+			if (mActer.calculateExtentsDistance(mTarget) < mActer.getIntrRange())
             {
                 doConstruct();
                 return;
@@ -111,8 +112,8 @@ public class Construct : Action
     //-------------------------------------------------------------------------------------------------
     private void doConstruct()
     {
-        Debug.Log("Doing the construct.");
-        mTarget.setProgress(mTarget.getProgress() + mActer.mConstructSpeed / 50f);
+        //Debug.Log("Doing the construct.");
+		mTarget.setProgress(mTarget.getProgress() + mActer.getConstructSpeed() / 50f);
         if (mTarget.getProgress() >= 100f)
             mComplete = true;
     }
@@ -121,4 +122,10 @@ public class Construct : Action
     {
         mActer = GetComponentInParent<Unit>();
     }
+
+	private void getItemsForConstruction(KeyValuePair<GameTypes.ItemType,int> needed)
+	{
+		mActer.retrieveItemsAndGiveToTarget(needed, mTarget);
+	}
+
 }

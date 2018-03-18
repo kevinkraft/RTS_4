@@ -75,7 +75,7 @@ public class Collect : Action
         }
         //is target in range?
         float dist = Vector3.Distance(mActer.transform.position, mTarget.transform.position);
-        if (dist < mActer.mIntrRange)
+		if (dist < mActer.getIntrRange())
         {
             doCollect();
             return;
@@ -83,7 +83,7 @@ public class Collect : Action
         else
         {
             //is it in range of the bounds?
-            if (mActer.calculateExtentsDistance(mTarget) < mActer.mIntrRange)
+			if (mActer.calculateExtentsDistance(mTarget) < mActer.getIntrRange())
             {
                 doCollect();
                 return;
@@ -151,7 +151,7 @@ public class Collect : Action
 		}
 		else
 		{
-			mProgress += mActer.mExchangeSpeed / 0.5f; //50 cycles to add one
+			mProgress += mActer.getExchangeSpeed() / 0.5f; //50 cycles to add one
 			return;
 		}
         //int amount = mActer.mExchangeSpeed / 49f; //default exchange speed is too fast
@@ -186,7 +186,7 @@ public class Collect : Action
         }
         //set the amount and remove from the resource
         //Debug.Log("moving the amount from resource to unit");
-        act_item.mAmount += amount;
+		act_item.setAmount( act_item.getAmount() + amount );
         mTarget.mAmount -= amount;
     }
 

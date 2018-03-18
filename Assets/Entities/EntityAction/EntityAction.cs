@@ -10,9 +10,9 @@ public class EntityAction : EntityHP
 
     //protected members
     protected ActionGroup mActions;
+	protected ItemGroup mInventory;
 
     //private
-    private ItemGroup mInventory;
     //private float mIntrRange = UNIT_INTERACTION_RANGE;
     //private float mAttackDamage = UNIT_ATTACK_DAMAGE;
 
@@ -88,21 +88,12 @@ public class EntityAction : EntityHP
         return mInventory.addItem(item);
     }
 
-    public void dropInventory()
+    public virtual void dropInventory()
     {
         //drop the units inventory on the ground
         //To Do: Implement Items that are visible on the map
         //Currently I'm just deleting them
         mInventory.wipe();
-    }
-
-    public void dumpInventory()
-    {
-        //drop everything in the inventory into the stockpile
-        Exchange ex = ObjectManager.initExchange(transform);
-        ex.setTarget(getStockpile());
-        ex.setExchangeList(getInventoryDictionary());
-        mActions.prependAction(ex);
     }
 
     public string activeActionType()
@@ -128,6 +119,11 @@ public class EntityAction : EntityHP
         return mInventory;
     }
 
+	public int getInventoryCapacity()
+	{
+		return mInventory.mCapacity;
+	}
+
     public Dictionary<GameTypes.ItemType, int> getInventoryDictionary()
     {
         return mInventory.getInventoryDictionary();
@@ -147,6 +143,12 @@ public class EntityAction : EntityHP
     {
         return mInventory.getItemOfType(type);
     }
+
+	public virtual bool hasEquipItem()
+	{
+		return mInventory.hasEquipItem();
+	}
+
 
 	public bool isIdle()
 	{

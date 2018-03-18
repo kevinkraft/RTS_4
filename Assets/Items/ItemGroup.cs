@@ -16,20 +16,21 @@ public class ItemGroup : MonoBehaviour
     // unity methods
     //-------------------------------------------------------------------------------------------------
 
-    private void Awake()
+    public virtual void Awake()
     {
         mItems = new List<Item>( GetComponentsInChildren<Item>() );
     }
-    private void Update()
+    public virtual void Update()
     {
         //remove an item if it has 0 or less
         GameTypes.ItemType remove_type = GameTypes.ItemType.Unknown;
         int i = 0;
         foreach ( Item item in mItems)
         {
-            if (item.mAmount <= 0)
+			if (item.getAmount() <= 0)
             {
-                remove_type = item.mType;
+
+				remove_type = item.getType();
                 break;
             }
             i++;
@@ -50,14 +51,14 @@ public class ItemGroup : MonoBehaviour
         Dictionary<GameTypes.ItemType, int> rdict = new Dictionary<GameTypes.ItemType, int>();
         foreach (Item item in mItems)
         {
-            rdict.Add(item.mType, item.mAmount);
+			rdict.Add(item.getType(), item.getAmount());
         }
         return rdict;
     }
 
     public bool addItem(Item item)
     {
-        if (getSize() + item.mAmount > mCapacity)
+		if (getSize() + item.getAmount() > mCapacity)
         {
             Debug.Log("Not enough space in the ItemGroup for this item.");
             return false;
@@ -82,7 +83,7 @@ public class ItemGroup : MonoBehaviour
     {
         foreach (Item item in mItems)
         {
-            if (item.mType == type)
+			if (item.getType() == type)
                 return item;    
         }
         return null;
@@ -94,10 +95,15 @@ public class ItemGroup : MonoBehaviour
         int size = 0;
         foreach (Item item in mItems)
         {
-            size += item.mAmount;
+			size += item.getAmount();
         }
         return size;
     }
+
+	public virtual bool hasEquipItem()
+	{
+		return false;
+	}
 
     public bool isFull()
     {
@@ -115,12 +121,12 @@ public class ItemGroup : MonoBehaviour
             return "Empty";
         foreach ( Item item in mItems )
         {
-            text += string.Format("{0} : {1}\n", item.mType.ToString(), item.mAmount);
+			text += string.Format("{0} : {1}\n", item.getType().ToString(), item.getAmount());
         }
         return text;
     }
 
-    public void wipe()
+    public virtual void wipe()
     {
         //deletes the Items, then resets the Item list to be empty
         foreach(Item item in mItems)

@@ -34,7 +34,7 @@ public class Attack : Action
         }   
         //is target in range?
         float dist = Vector3.Distance(mActer.transform.position, mTarget.transform.position);
-        if (dist < mActer.mIntrRange)
+		if (dist < mActer.getIntrRange())
         {
             doDamage();
             return;
@@ -42,7 +42,7 @@ public class Attack : Action
         else
         {
             //is it in range of the bounds?
-            if (mActer.calculateExtentsDistance(mTarget) < mActer.mIntrRange)
+			if (mActer.calculateExtentsDistance(mTarget) < mActer.getIntrRange())
             {
                 doDamage();
                 return;
@@ -70,7 +70,7 @@ public class Attack : Action
     //-------------------------------------------------------------------------------------------------
     private void doDamage()
     {
-        mTarget.setHP( mTarget.getHP() - mActer.mAttackSpeed/10f );
+		mTarget.setHP( mTarget.getHP() - mActer.getAttack()/10f );
     }
 
     private void getActer()

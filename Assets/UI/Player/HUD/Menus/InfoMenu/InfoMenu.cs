@@ -58,9 +58,10 @@ public class InfoMenu : Menu
         if (ent_hp)
             text += string.Format("HP: {0:0} \n", ent_hp.mHP);
         EntityAction ent_act = ent as EntityAction;
+		Unit unit = ent as Unit;
         if (ent_act)
         { 
-            text += string.Format("InvCap.: {0:0} \n", ent_act.getInventory().mCapacity);
+			if (!unit) text += string.Format("InvCap.: {0:0} \n", ent_act.getInventory().mCapacity);
             if (ent_act.mTown)
             {
                 text += string.Format("Town: {0}\n", ent_act.mTown.mName);
@@ -70,7 +71,7 @@ public class InfoMenu : Menu
         Resource res = ent as Resource;
         if (res)
             text += string.Format("Amount: {0:0} \n", res.mAmount);
-        Unit unit = ent as Unit;
+		//unit
         if (unit)
         {
             //hunger
@@ -82,14 +83,15 @@ public class InfoMenu : Menu
                 setupUnitUngarrisonButton(unit, mButton1);
             }
             //gender
-            text += string.Format("Gender: {0}\n", unit.mGender.ToString());
+			text += string.Format("Gender: {0}\n", unit.getGender().ToString());
             //pregnancy
-            if (unit.mGender == GameTypes.GenderType.Female )
+			if (unit.getGender() == GameTypes.GenderType.Female )
             {
                 text += string.Format("Pregnant: {0}\n", unit.isPregnant().ToString());
                 if (unit.isPregnant())
                     text += string.Format("Preg.Prog.: {0:0}\n", unit.getPregnancyProgress());
             }
+			text += unit.printStats();
         }
         Building build = ent as Building;
         if (build)
@@ -113,6 +115,11 @@ public class InfoMenu : Menu
         {
             text += string.Format("Progress: {0:0}\n", wb.displayProgress());
 			text += string.Format("NumWorkers: {0}/{1}\n", wb.getNWorkers(), wb.getMaxWorkers() );
+			WorkedProdBuilding wpb = wb as WorkedProdBuilding;
+			if ( wpb )
+			{
+				text += wpb.printNeededItems();
+			}
 		}
         mText.text = text;
     }

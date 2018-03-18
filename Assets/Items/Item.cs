@@ -8,12 +8,38 @@ public class Item : Selectable
 
     
     //public members
-    public GameTypes.ItemType mType;
-    public int mAmount;
+	[SerializeField]
+    private GameTypes.ItemType mType;
+	[SerializeField]
+    private int mAmount;
     //public bool mHeld;
 
     //-------------------------------------------------------------------------------------------------
     // unity methods
     //-------------------------------------------------------------------------------------------------
+
+	//-------------------------------------------------------------------------------------------------
+	// Public methods
+	//-------------------------------------------------------------------------------------------------
+
+	public int getAmount()
+	{
+		return mAmount;
+	}
+
+	public GameTypes.ItemType getType()
+	{
+		return mType;
+	}
+
+	public void setAmount(int am)
+	{
+		mAmount = am;
+	}
+
+	public void setType(GameTypes.ItemType t)
+	{
+		mType = t;
+	}
 
 }

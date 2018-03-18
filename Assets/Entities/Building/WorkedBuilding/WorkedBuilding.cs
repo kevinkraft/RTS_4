@@ -3,23 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using RTS;
 
-//class for a Building that can be worked to produce something
+//class for a Building that can be worked to produce an Item
 
 //Notes:
 // * Has a progress bar which the working Unit fills as they work to produce some item
 // * WorkedBuilding takes in no items, need to make a child class that takes in items
 // * Has a max number of workers
 //   * But it doesnt need to know who the workers are
+// * This class is updated by the Units who are working it, so no Update function is needed
 
 public class WorkedBuilding : Building
 {
 
-    //private member
-    private float mProgress = 0f;
-    private float mMaxProgress = 100f;
-    private GameTypes.ItemType mCreateItemType = GameTypes.ItemType.Unknown;
-    private int mCreateItemAmount = 5;
-	private UnitInventory mWorkers;
+    //protected member
+    protected float mProgress = 0f;
+    protected float mMaxProgress = 100f;
+    protected GameTypes.ItemType mCreateItemType = GameTypes.ItemType.Unknown;
+    protected int mCreateItemAmount = 5;
+	protected UnitInventory mWorkers;
 
     //-------------------------------------------------------------------------------------------------
     // unity methods
@@ -49,9 +50,19 @@ public class WorkedBuilding : Building
         setupType();
 
     }
+
+	public override void Update()
+	{
+		if (!isInstantiated)
+			return;
+		base.Update();
+
+	}
+
     //-------------------------------------------------------------------------------------------------
     // public methods
     //-------------------------------------------------------------------------------------------------
+
 	public void addWorker(Unit worker)
 	{
 		if ( getMaxWorkers() > getNWorkers() )
@@ -63,44 +74,16 @@ public class WorkedBuilding : Building
         return 100f * mProgress / mMaxProgress;
     }
     
-    public void doCycle(float prog = 0.1f)
+
+    public virtual void doCycle(float prog)
     {
-        //is the progress bar full?
-        if (mProgress >= mMaxProgress)
-        {
-            //yes its full, does it have space for item?
-            int invsize = getInventorySize();
-            int invcap = getInventory().mCapacity;
-            int iamount = mCreateItemAmount;
-            if (isInventoryFull())
-            {
-                return;
-            }
-            else if (invsize + iamount > invcap)
-            {
-                //not enough space, reduce amount
-                iamount = invcap - invsize;
-            }
-            //so make the item
-            Item item = getItemOfType(mCreateItemType);
-            if (!item)
-            {
-                //item not in inventory, make it
-                item = ObjectManager.initItem(mCreateItemType, getInventory().transform);
-                item.mAmount = iamount;
-                this.addItem(item);
-            }
-            else
-            {
-                //it has the item so just increase the amount
-                item.mAmount += iamount;
-            }
-            mProgress = 0;
-            return;
-        }
-        //to be called from the Work Action 
-        mProgress += prog;
+		checkProgressAndMakeItem(prog);
     }
+
+	public int getCreateItemAmount()
+	{
+		return mCreateItemAmount;
+	}
 
     public GameTypes.ItemType getCreateItemType()
     {
@@ -140,6 +123,51 @@ public class WorkedBuilding : Building
         mProgress = p;
     }
 
+	//-------------------------------------------------------------------------------------------------
+	// protected methods
+	//-------------------------------------------------------------------------------------------------
+
+	protected bool checkProgressAndMakeItem(float prog = 0.1f)
+	{
+		//This function returns true if an item is made
+		//is the progress bar full?
+		if (mProgress >= mMaxProgress)
+		{
+			//yes its full, does it have space for item?
+			int invsize = getInventorySize();
+			int invcap = getInventory().mCapacity;
+			int iamount = mCreateItemAmount;
+			if (isInventoryFull())
+			{
+				return false;
+			}
+			else if (invsize + iamount > invcap)
+			{
+				//not enough space, reduce amount
+				iamount = invcap - invsize;
+			}
+			//so make the item
+			Item item = getItemOfType(mCreateItemType);
+			if (!item)
+			{
+				//item not in inventory, make it
+				item = ObjectManager.initItem(mCreateItemType, getInventory().transform);
+				item.setAmount(iamount);
+				this.addItem(item);
+			}
+			else
+			{
+				//it has the item so just increase the amount
+				item.setAmount( item.getAmount() + iamount);
+			}
+			mProgress = 0;
+			return true;
+		}
+		//to be called from the Work Action 
+		mProgress += prog;
+		return false;
+	}
+
     //-------------------------------------------------------------------------------------------------
     // private methods
     //-------------------------------------------------------------------------------------------------
@@ -156,8 +184,12 @@ public class WorkedBuilding : Building
 				mWorkers.mCapacity = 2;
                 break;
             default:
-                Debug.LogError(string.Format("WorkedBuilding type {0} not recognised",mType.ToString()));
-                break;
+				WorkedProdBuilding wpb = (WorkedProdBuilding) this;
+				if ( !wpb )
+				{
+					Debug.LogError("Building type not recognised");
+				}
+				break;
 
         }
     }

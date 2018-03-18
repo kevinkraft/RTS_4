@@ -43,6 +43,27 @@ namespace RTS
         //public static float UNIT_HUNGRY_DAMAGE_TAKEN { get { return 0.1f; } } //for testing
         //the value of 1 Food in terms of unit hunger
         public static float UNIT_FOOD_HUNGER_VALUE { get { return 10f; } }
+		public static Dictionary<GameTypes.UnitStatType, float> UNIT_DEFAULT_FLOAT_STATS = new Dictionary<GameTypes.UnitStatType, float>()
+		{
+			{GameTypes.UnitStatType.InteractionRange, 1f},
+			{GameTypes.UnitStatType.Attack, 1f},
+			{GameTypes.UnitStatType.ExchangeSpeed, 1f},
+			{GameTypes.UnitStatType.MoveSpeed, 3f},
+			{GameTypes.UnitStatType.RotateSpeed, 3f},
+			{GameTypes.UnitStatType.ProcreateChance, 10f},
+			{GameTypes.UnitStatType.ConstructSpeed, 1f},
+			{GameTypes.UnitStatType.WorkSpeed, 1f}
+		};
+		public static Dictionary<GameTypes.UnitStatType, int> UNIT_DEFAULT_INT_STATS = new Dictionary<GameTypes.UnitStatType, int>()
+		{
+			{GameTypes.UnitStatType.InventoryCapacity, 10}
+		};
+		public static List<GameTypes.EquipmentSlots> DEFAULT_UNIT_EQUIPMENT_SLOTS = new List<GameTypes.EquipmentSlots>()
+		{
+			{GameTypes.EquipmentSlots.Head},
+			{GameTypes.EquipmentSlots.Feet},
+			{GameTypes.EquipmentSlots.HandR},
+		};
 
         //maps
 		public static int REGION_MAP_WIDTH { get { return 300; } } //default, for now
@@ -63,7 +84,7 @@ namespace RTS
 			{GameTypes.ItemType.Unknown, 0f},
 			{GameTypes.ItemType.Food, 1f},
 			{GameTypes.ItemType.Wood, 1f},
-			{GameTypes.ItemType.Stone, 0.5f},
+			{GameTypes.ItemType.Stone, 1f}, //default 0.5f
 			{GameTypes.ItemType.Copper, 0.2f},
 			{GameTypes.ItemType.Tin, 0.2f}
 		};
@@ -106,13 +127,73 @@ namespace RTS
         }; } } //default =50
         public static Dictionary<GameTypes.ItemType, int> STOCKPILE_CONSTRUCTION_MATERIALS { get { return new Dictionary<GameTypes.ItemType, int>()
         {
-            {GameTypes.ItemType.Wood, 100} //default=100
+            {GameTypes.ItemType.Wood, 100}
         }; }}
         public static Dictionary<GameTypes.ItemType, int> FARM_CONSTRUCTION_MATERIALS { get { return new Dictionary<GameTypes.ItemType, int>()
         {
-            {GameTypes.ItemType.Wood, 30} //default=30
+            {GameTypes.ItemType.Wood, 30}
         }; }}
+		public static Dictionary<GameTypes.ItemType, int> SPEARWORKSHOP_CONSTRUCTION_MATERIALS { get { return new Dictionary<GameTypes.ItemType, int>()
+		{
+			{GameTypes.ItemType.Wood, 30}
+		}; }}
 
+		//Materials needed for Item Production types
+		public static Dictionary<GameTypes.ItemType, int> STONESPEAR_PRODUCTION_MATERIALS = new Dictionary<GameTypes.ItemType, int>()
+		{
+			{GameTypes.ItemType.Wood, 1},
+			{GameTypes.ItemType.Stone, 1}
+		};
+
+
+		//Equip item globals
+		//the slot that the item goes into
+		public static GameTypes.EquipmentSlots EQUIP_ITEM_MAGICHAT_SLOT = GameTypes.EquipmentSlots.Head;
+		public static GameTypes.EquipmentSlots EQUIP_ITEM_MAGICBOOTS_SLOT = GameTypes.EquipmentSlots.Feet;
+		public static GameTypes.EquipmentSlots EQUIP_ITEM_MAGICCLUB_SLOT = GameTypes.EquipmentSlots.HandR;
+		public static GameTypes.EquipmentSlots EQUIP_ITEM_MAGICSWORD_SLOT = GameTypes.EquipmentSlots.HandR;
+		public static GameTypes.EquipmentSlots EQUIP_ITEM_STONESPEAR_SLOT = GameTypes.EquipmentSlots.HandR;
+		//the equip attributes of the item when equipped
+		public static Dictionary<GameTypes.UnitStatType, float> EQUIP_ITEM_MAGICHAT_EQUIP_EFFECTS = new Dictionary<GameTypes.UnitStatType, float>()
+		{
+			{GameTypes.UnitStatType.WorkSpeed, 50},
+			{GameTypes.UnitStatType.ProcreateChance, -100f}
+		};
+		public static Dictionary<GameTypes.UnitStatType, float> EQUIP_ITEM_MAGICCLUB_EQUIP_EFFECTS = new Dictionary<GameTypes.UnitStatType, float>()
+		{
+			{GameTypes.UnitStatType.Attack, 50},
+			{GameTypes.UnitStatType.ProcreateChance, -100f}
+		};
+		public static Dictionary<GameTypes.UnitStatType, float> EQUIP_ITEM_MAGICBOOTS_EQUIP_EFFECTS = new Dictionary<GameTypes.UnitStatType, float>()
+		{
+			{GameTypes.UnitStatType.MoveSpeed, 50},
+			{GameTypes.UnitStatType.ProcreateChance, -100f}
+		};
+		public static Dictionary<GameTypes.UnitStatType, float> EQUIP_ITEM_MAGICSWORD_EQUIP_EFFECTS = new Dictionary<GameTypes.UnitStatType, float>()
+		{
+			{GameTypes.UnitStatType.Attack, 50},
+			{GameTypes.UnitStatType.ProcreateChance, -100f}
+		};
+		public static Dictionary<GameTypes.UnitStatType, float> EQUIP_ITEM_STONESPEAR_EQUIP_EFFECTS = new Dictionary<GameTypes.UnitStatType, float>()
+		{ {GameTypes.UnitStatType.Attack, 4} };
+		//mapping between unit stat type and the display text 
+		public static Dictionary<GameTypes.UnitStatType, string> UNIT_STATS_DISPLAY_TEXT = new Dictionary<GameTypes.UnitStatType, string>()
+		{
+			{GameTypes.UnitStatType.Unknown, "Unknw"},
+			{GameTypes.UnitStatType.InteractionRange, "Rng"},
+			{GameTypes.UnitStatType.Attack, "Att"},
+			{GameTypes.UnitStatType.ExchangeSpeed, "ExchSpd"},
+			{GameTypes.UnitStatType.MoveSpeed, "Spd"},
+			{GameTypes.UnitStatType.RotateSpeed, "RotSpd"},
+			{GameTypes.UnitStatType.ProcreateChance, "Sx%"},
+			{GameTypes.UnitStatType.ConstructSpeed, "ConstrSpd"},
+			{GameTypes.UnitStatType.InventoryCapacity, "InvCap"},
+			{GameTypes.UnitStatType.WorkSpeed, "WrkSpd"},
+		};
+
+
+		//PRODUCTION BUILDING CREATE ITEMS
+		public static GameTypes.ItemType SPEARWORKSHOP_PRODUCTION_ITEM = GameTypes.ItemType.StoneSpear;
 
 
     }
@@ -286,8 +367,8 @@ namespace RTS
         public static Item initItem(GameTypes.ItemType type, Transform parent)
         {
             Item item = GameObject.Instantiate(getItem(type.ToString()), parent).GetComponent<Item>();
-            item.mAmount = 0;
-            item.mType = type;
+			item.setAmount(0);
+			item.setType(type);
             return item;
 
         }
@@ -296,7 +377,7 @@ namespace RTS
         public static Unit initUnit( Vector3 pos, GameTypes.GenderType gender, Town town)
         {
             Unit unit = GameObject.Instantiate(getUnit("Unit"), town.gameObject.transform).GetComponent<Unit>();
-            unit.mGender = gender;
+			unit.setGender(gender);
             unit.gameObject.transform.position = pos;
             town.addEntity("units", unit);
             return unit;
@@ -360,12 +441,12 @@ namespace RTS
     public static class GameTypes
     {
 
-        ////unknown must be first
-		public enum ItemType { Unknown, Food, Wood, Stone, Copper, Tin };
+        //unknown must be first
+		public enum ItemType { Unknown, Food, Wood, Stone, Copper, Tin, MagicHat, MagicBoots, MagicClub, MagicSword, StoneSpear };
 		//public enum ItemType {Unknown, Food};
 
         //unknown must be first
-        public enum BuildingType { Unknown, MainHut, Stockpile, Farm };
+        public enum BuildingType { Unknown, MainHut, Stockpile, Farm, SpearWorkshop };
 
         //unknown must be first
         public enum GenderType { Unknown, Male, Female };
@@ -375,6 +456,13 @@ namespace RTS
 
 		//unknown must be first
 		public enum IconType { Unknown, Caution};
+
+		//unknown must be first
+		public enum EquipmentSlots { Unknown, Head, Feet, HandR };
+
+		//unknown must be first
+		public enum UnitStatType { Unknown, InteractionRange, Attack, ExchangeSpeed, MoveSpeed, RotateSpeed, ProcreateChance, ConstructSpeed, InventoryCapacity, WorkSpeed };
+
     }
 
 }

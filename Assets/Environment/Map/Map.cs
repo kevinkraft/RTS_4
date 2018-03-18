@@ -133,6 +133,7 @@ public class Map : Selectable
 		{
 			//Debug.Log(t);
 			//check drop rate
+			if ( !Globals.RESOURCE_REGION_DROP_RATES.ContainsKey(t) ) continue;
 			if ( getRand(0,1) > Globals.RESOURCE_REGION_DROP_RATES[t]  )
 			{
 				//Debug.Log("not passed");

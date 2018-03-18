@@ -117,7 +117,7 @@ public class Procreate : Action
                     if (unit.activeActionType() == "Procreate")
                     {
                         //are they opposite genders
-                        if (unit.mGender == GameTypes.GenderType.Male)
+						if (unit.getGender() == GameTypes.GenderType.Male)
                         {
                             //its male, start the dice rolling
                             //Debug.Log("found partner");
@@ -164,7 +164,7 @@ public class Procreate : Action
         //Debug.Log("random is " + rnd.ToString());
         //Debug.Log("precreate change is " + Mathf.Min(mActer.mProcreateChance, mPartner.mProcreateChance).ToString());
 
-        if ( rnd < Mathf.Min(mActer.mProcreateChance, mPartner.mProcreateChance) )
+		if ( rnd < Mathf.Min(mActer.getProcreateChance(), mPartner.getProcreateChance()) )
         {
             //Debug.Log("procreated!");
             //sucessfully procreated
@@ -189,7 +189,7 @@ public class Procreate : Action
     private void getActer()
     {
         mActer = GetComponentInParent<Unit>();
-        mActerGender = mActer.mGender;
+		mActerGender = mActer.getGender();
     }
     private void setPartner(Unit partner)
     {

@@ -15,3 +15,6 @@ Instructions for adding a Resource:
      make sure the Resource script from above has this item type.
 
 3) Make an Item prefab for "Copper".
+
+4) Add the Item prefab and the Resource prefab into the relevant places of the
+   GameObjectList

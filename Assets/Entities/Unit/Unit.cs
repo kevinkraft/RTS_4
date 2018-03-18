@@ -13,18 +13,10 @@ using RTS;
 
 public class Unit : EntityAction
 {
+	//private members
+	public GameTypes.GenderType mGender;
 
-    //public members
-    public float mIntrRange;
-    public float mAttackSpeed;
-    public float mExchangeSpeed;
-    public float mMoveSpeed;
-    public float mRotateSpeed;
-    public float mProcreateChance;
-    public GameTypes.GenderType mGender;
-    public float mConstructSpeed = 50f; //default=1
-
-    //private members
+    //private member
     //private float mSpeed = UNIT_SPEED;
     //private float mRotateSpeed = UNIT_ROTATE_SPEED;
     private bool mGarrisoned = false;
@@ -33,10 +25,23 @@ public class Unit : EntityAction
     private float mPregnancyProgress = 0f;
     private System.Random mRandomGen = new System.Random();
     private float mHunger = 0f;
+	private UnitStats mStats;
 
     //-------------------------------------------------------------------------------------------------
     // unity methods
     //-------------------------------------------------------------------------------------------------
+	public override void Awake()
+	{
+		base.Awake();
+		mStats = GetComponentInChildren<UnitStats>();
+		if ( !mStats )
+			Debug.LogError("UnitStats is null.");
+		//overwrite the ItemGropu of mInventory with EquipmentInventory
+		mInventory = GetComponentInChildren<EquipmentInventory>();
+		if ( !mInventory )
+			Debug.LogError("EquiptmentInventory is null.");
+	}
+
     public override void Update()
     {
         if (!isInstantiated)
@@ -45,12 +50,31 @@ public class Unit : EntityAction
         //update pregnancy
         updatePregnancy();
         updateHunger();
+		//make sure the inventory capacity is the same as that in UnitStats
+		if ( getInventoryCapacity() != mStats.getIntValue(GameTypes.UnitStatType.InventoryCapacity)  )
+		{
+			//the inventory capacity in UnitStats has changed
+			getInventory().mCapacity = mStats.getIntValue(GameTypes.UnitStatType.InventoryCapacity);
+		}
     }
 
     //-------------------------------------------------------------------------------------------------
     // public methods
     //-------------------------------------------------------------------------------------------------
-    public void attack(EntityHP target)
+
+	public void addToStat(GameTypes.UnitStatType stype, float cval)
+	{
+		//add a value to the unit stats, use a minus to subtract.
+		mStats.addToValue(stype, cval);
+	}
+
+	public void addToStat(GameTypes.UnitStatType stype, int cval)
+	{
+		//add a value to the unit stats, use a minus to subtract.
+		mStats.addToValue(stype, cval);
+	}
+
+	public void attack(EntityHP target)
     {
         //make a new attack instance as a child of the action group object
         Attack att = Instantiate(ObjectManager.getAction("Attack"), mActions.transform).GetComponent<Attack>();
@@ -78,6 +102,16 @@ public class Unit : EntityAction
         }
     }
 
+	public override void dropInventory()
+	{
+		//drop the units inventory on the ground
+		//To Do: Implement Items that are visible on the map
+		//Currently I'm just deleting them
+		EquipmentInventory einv = _getEquipmentInventory();
+		if (!einv) return;
+		einv.wipe();
+	}
+
     public void dropOrDumpInventory()
     {
         //drops the inventory if the stockpile is full, or dumps it to the stockpile
@@ -86,6 +120,36 @@ public class Unit : EntityAction
         else
             dumpInventory();
     }
+
+	public void dumpInventory()
+	{
+		//drop everything in the inventory into the stockpile
+		/*Exchange ex = ObjectManager.initExchange(transform);
+		ex.setTarget(getStockpile());
+		ex.setExchangeList(getInventoryDictionary());
+		mActions.prependAction(ex);*/
+		foreach (KeyValuePair<GameTypes.ItemType,int> it in getInventoryDictionary() )
+		{
+			Item item = getItemOfType(it.Key);
+			EquipItem ei = item as EquipItem;
+			if (ei)
+			{
+				//if its equipped, dont drop it
+				if ( ei.isEquipped() == true ) continue;
+			}
+			exchangeWith(getStockpile(), it.Key, it.Value);
+		}
+	}
+
+	public void equipItem(EquipItem eitem)
+	{
+		EquipmentInventory einv = _getEquipmentInventory();
+		if (!einv)
+		{
+			Debug.LogError("Unit has invalid EquipmentInventory");
+		}
+		einv.equipItem(eitem);
+	}
 
     public void exchangeWith(EntityAction target, GameTypes.ItemType type, int amount)
     {
@@ -117,25 +181,73 @@ public class Unit : EntityAction
         mActions.prependAction(gar);
     }
 
+	public float getAttack()
+	{
+		return mStats.getValue(GameTypes.UnitStatType.Attack);
+	}
+
+	public float getConstructSpeed()
+	{
+		return mStats.getValue(GameTypes.UnitStatType.ConstructSpeed);
+	}
+
+	public List<EquipItem> getAvailableEquipItems()
+	{
+		List<EquipItem> alist = new List<EquipItem>();
+		EquipmentInventory einv = _getEquipmentInventory();
+		if (!einv) return alist;
+		alist = einv.getAvailableEquipItems();
+		return alist;
+	}
+
+	public List<EquipItem> getEquippedItems()
+	{
+		List<EquipItem> elist = new List<EquipItem>();
+		EquipmentInventory einv = _getEquipmentInventory();
+		if (!einv) return elist;
+		elist = einv.getEquippedItems();
+		return elist;
+	}
+		
+	public float getExchangeSpeed()
+	{
+		return mStats.getValue(GameTypes.UnitStatType.ExchangeSpeed);
+	}
+
     public Building getGarrison()
     {
         return mGarrison;
     }
+
+	public GameTypes.GenderType getGender()
+	{
+		return mGender;
+	}
 
     public float getHunger()
     {
         return mHunger;
     }
 
+	public float getIntrRange()
+	{
+		return mStats.getValue(GameTypes.UnitStatType.InteractionRange);
+	}
+
     public float getMoveSpeed()
     {
-        return mMoveSpeed;
+		return mStats.getValue(GameTypes.UnitStatType.MoveSpeed);
     }
 
     public float getPregnancyProgress()
     {
         return mPregnancyProgress;
     }
+
+	public float getProcreateChance()
+	{
+		return mStats.getValue(GameTypes.UnitStatType.ProcreateChance);
+	}
 
     public bool getResource(GameTypes.ItemType type, int amount=-1)
     {
@@ -188,7 +300,7 @@ public class Unit : EntityAction
 
     public float getRotateSpeed()
     {
-        return mRotateSpeed;
+		return mStats.getValue(GameTypes.UnitStatType.RotateSpeed);
     }
 
     /*public override void mouseClick(GameObject hitObject, Vector3 hitPoint)
@@ -196,7 +308,17 @@ public class Unit : EntityAction
         //process a left mouse click while this entity is selected by the player
         Debug.Log("in unit, this function does nothing yet");
     }*/
-	
+
+	public float getWorkSpeed()
+	{
+		return mStats.getValue(GameTypes.UnitStatType.WorkSpeed);
+	}
+
+	public override bool hasEquipItem()
+	{
+		return mInventory.hasEquipItem();
+	}
+
     public bool isGarrisoned()
     {
         return mGarrisoned;
@@ -216,6 +338,13 @@ public class Unit : EntityAction
 		bool new_action = false;
 		foreach ( KeyValuePair<GameTypes.ItemType,int> pair in dict )
 		{
+			//skip- if the item is equipped
+			Item it = getItemOfType(pair.Key);
+			EquipItem ei = it as EquipItem;
+			if (ei)
+			{
+				if (ei.isEquipped()) continue;
+			}
 			//skip if its the item we want
 			if ( pair.Key != itype )
 			{
@@ -264,6 +393,41 @@ public class Unit : EntityAction
             mActions.prependAction(move);
     }
 
+	public string printStats()
+	{
+		//return a string containing info about the Units stats
+		return mStats.print();
+	}
+
+	public void retrieveItemsAndGiveToTarget(KeyValuePair<GameTypes.ItemType,int> needed, EntityAction target)
+	{
+		//resources are needed by an EntityAction, send Unit to get them and return them to the EntityAction
+		if (this.getResource(needed.Key, needed.Value))
+		{
+			//unit has the resource, give the right amount to the WorkedProdBuilding
+			Item item = this.getItemOfType(needed.Key);
+			int amount = 0;
+			if (!item)
+				Debug.LogError("The acter doesn't have the Item. This shouldn't be possible.");
+			//if the unit has more than is needed then set to the needed amount
+			if ( item.getAmount() > needed.Value )
+			{
+				amount = needed.Value;
+			}
+			else
+			{
+				amount = item.getAmount();
+			}
+			this.exchangeWith(target, needed.Key, amount);
+			return;
+		}
+		else
+		{
+			//unit has been given actions to go and get the resource
+			return;
+		}
+	}
+
     public void returnToStockpile(GameTypes.ItemType type)
     {
         Item item = getItemOfType(type);
@@ -275,13 +439,28 @@ public class Unit : EntityAction
             dumpInventory();
             return;
         }
-        exchangeWith(getStockpile(), type, item.mAmount);
+		exchangeWith(getStockpile(), type, item.getAmount());
     }
+
+	public void setGender(GameTypes.GenderType gender)
+	{
+		mGender = gender;
+	}
 
     public void setHunger(float h)
     {
         mHunger = h;
     }
+
+	public void unequipItem(EquipItem eitem)
+	{
+		EquipmentInventory einv = _getEquipmentInventory();
+		if (!einv)
+		{
+			Debug.LogError("Unit has invalid EquipmentInventory");
+		}
+		einv.unequipItem(eitem);
+	}
 
     public void ungarrisonSelf()
     {
@@ -338,7 +517,18 @@ public class Unit : EntityAction
     //-------------------------------------------------------------------------------------------------
     // private methods
     //-------------------------------------------------------------------------------------------------
-    private void ungarrison()
+	private EquipmentInventory _getEquipmentInventory()
+	{
+		EquipmentInventory einv = mInventory as EquipmentInventory;
+		if (!einv)
+		{
+			Debug.LogError("Unit does not have an equippment inventory.");
+			return null;
+		}
+		return einv;
+	}
+
+	private void ungarrison()
     {
         mGarrisoned = false;
         mGarrison = null;

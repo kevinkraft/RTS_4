@@ -32,7 +32,7 @@ public class Garrison : Action
         }
         //is target in range?
         float dist = Vector3.Distance(mActer.transform.position, mTarget.transform.position);
-        if (dist < mActer.mIntrRange)
+		if (dist < mActer.getIntrRange())
         {
             doGarrison();
             return;
@@ -40,7 +40,7 @@ public class Garrison : Action
         else
         {
             //is it in range of the bounds?
-            if (mActer.calculateExtentsDistance(mTarget) < mActer.mIntrRange)
+			if (mActer.calculateExtentsDistance(mTarget) < mActer.getIntrRange())
             {
                 doGarrison();
                 return;

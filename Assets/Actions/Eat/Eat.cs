@@ -109,12 +109,12 @@ public class Eat : Action
         {
             Debug.LogError("Can't find Item of type Food. This shouldn't be possible");
         }
-        if ( amount > item.mAmount)
+		if ( amount > item.getAmount())
         {
-            amount = item.mAmount;
+			amount = item.getAmount();
         }
         //remove from the item and remove from the hunger
-        item.mAmount -= amount;
+		item.setAmount( item.getAmount() - amount);
         mActer.setHunger(mActer.getHunger() - amount * Globals.UNIT_FOOD_HUNGER_VALUE );
         isFinished();
         return;
