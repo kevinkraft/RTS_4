@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using RTS;
 
-//Version 0.7
+//Version 0.8
 
 //To Do:
 // * I think removing the Player->Nation->Region->Town->Units/Buildings hierarchy would be good
