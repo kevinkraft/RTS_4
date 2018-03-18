@@ -9,13 +9,6 @@ using RTS;
 // * I think removing the Player->Nation->Region->Town->Units/Buildings hierarchy would be good
 //   * Keep the Region->Town->Units/Buildings hierarchy and have a list of Regions and towns controlled by the Nation and player
 //     that is kept as an attribute of the Nation or Player.
-// * Make Item amount to integers instead of floats(done)
-//   * The purpose of this is to make operations simpler and remove a few bugs(ok)
-//   * Change the Item class(done)
-//   * Change the actions that involve items(done)
-//     * The rate of collection will be determined by the Units work speed(done)
-//     * Same for exchange action.(ok)
-//   * Also need to update the UI that allows floats to be given(done)
 // * Implement Trade
 //   * Add Stone, so there is something to trade(done)
 //     * add drop rates for adding various Resources when a new region is made(done)
@@ -27,8 +20,6 @@ using RTS;
 //       * Has two job types
 //         * Traders move to and from other TradeDepots to exchange goods
 //         * Stockers just move goods around in the local Town
-// * WorkedProdBuildings(done)
-//   * Add a child class of WorkedBulding, WorkedProdBuilding, that takes in items and produces something(done)
 // * Vehicles
 //   * Implement Vehicles
 //   * Add a Cart class
@@ -40,43 +31,8 @@ using RTS;
 //   * We can always check if they will answer commands from the user and from the leader of what ever
 //     town or region they are in
 // * Equipment
-//   * A child class of Inventory will be called EquipmentInventory(done)
-//   * The Units mInventory attribute will be replaced with an EquiptmentInventory(done)
-//   * A EquipItem also needs to be added(done)
-//     * A child class of item that changes the attributes of a Unit when it is equpped(done)
-//   * The EquipInventory has slots where things can be placed(done)
-//   * Adding an EquipItem will result in the units stats being changed(done)
-//   * Unequipping stops the item from being actively equipped and removes its benefits.(done)
-//   * Removing the item from the inventory when it is equipped causes the item to also be unequipped.(done)
-//     * Need to use the unequip function everywhere that an item might be removed.(done)
-//   * Add a button to the unit item display menu that says equip for these items(added a new menu)
-//   * Also should add an Equip tab to the sidebar menu.(no, new menu)
-// * StoneSpear class
-//   * It inherits from Weapon, that inherits from EquipItem.
-//     * Im not sure the Weapon class will be any different from EquipItem, but it's probably useful to make the distinction now. (ok)
-//   * It is made in a specific WorkedBuilding called a SpearWorkshop
-//   * When equipped it increases attack.
-//   * I should add a visual for having something equipped
-//   * The visual for an Equipped Weapon is a hand holding it.
+//   * Visual for when something is equipped?
 //   * I'd like to add something simpler than a weapon, but for now I dont know what else to add that is simpler.
-//     * Why dont I add a MagicHat item, that does something unnecessary, like increase move speed. As a test of the EquipItem code
-//       and to test the system of adding visuals to the unit for an equip item, and to test the system for changing a units stats.
-//       * system for equipping ONE and only one of the item
-//         * Done through EquipmentInventory class
-//           * This replaces ItemGroup for Units
-//           * The problem is that mInventory is defined for EntityAction class, so how do we change the Units to EquiptmeentInventory?(ok)
-//             maybe it can just be cast in the Awake of Unit, or just overwritten (yes, just casting works)
-//           * I had to make mInventory for EntityAction a protected member instead of private. (ok)
-//           * Need to make a dedicated remove item funtion for the ItemGroup, then overide it in EquipmentInventory so that we can check
-//             if that item is equipped, and remove the Equipment if it is.
-//       * System for how it augments the Units stats
-//         * The Unit needs a UnitStats class to hold its stats in a way that can easily be changed(done)
-//           * UnitStats contains, interaction range, attack speed, exchange speed, move speed, rotate speed, procreate chance,
-//             construct speed.(done)
-//           * They are currently public, but they need to be private.(ok)
-//       * System for how it adds a visual to the model
-//       * UI system for equipping the item
-//         * a button in the item pane that opens another menu that can be used to select the items to equip
 // * QUALITY OF LIFE
 //   * Icons
 //     * to show hungry units
@@ -125,6 +81,7 @@ using RTS;
 //         * delete town if empty, delete units if there are units but no buildings and no other town(done)
 //     * I played the game for ages with a few hundred units and it didnt slow down(ok)
 // * GENERAL: 
+//   * The icon for a worked building with not enough workers is not being shown.
 //   * The Eat action is taking far too long.
 //   * Two units can explore the same Region such that two Regions are created i nthe same place
 //     * should be easy enough to fix, just add a check when finishing the Explore that the Region hasn already been explored.
