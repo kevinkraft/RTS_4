@@ -86,8 +86,27 @@ public class Construction : EntityAction
         //make building
         if (mDead == true)
             return;
-        Debug.Log("The building is made here.");
-        Building b = ObjectManager.initBuilding(gameObject.transform.position, mType, mTown);
+        //Debug.Log("The building is made here.");
+		//if we are building a TownHall, we want to make a new Town
+		Building b = null;
+		if ( mType == GameTypes.BuildingType.TownHall )
+		{
+			//need to determine the region that this new town is in by asking the world manager
+			WorldManager wm = this.transform.root.GetComponentInChildren<WorldManager>();
+			Region reg = wm.getRegionFromPosition(new Vector3(transform.position.x, 0, transform.position.y) );
+			if (!reg) 
+			{
+				Debug.LogError("Unable to find the region corresponding to the new Town.");
+			}
+			//make a new town
+			Town ntown = ObjectManager.initTown(reg);
+			b = ObjectManager.initBuilding(gameObject.transform.position, mType, ntown);
+		}
+		else
+		{
+			b = ObjectManager.initBuilding(gameObject.transform.position, mType, mTown);
+		}
+        
         //now remove the construction site
         mDead = true;
     }
@@ -129,10 +148,14 @@ public class Construction : EntityAction
             case GameTypes.BuildingType.Unknown:
                 Debug.LogError("Unknown Building type");
                 break;
-            case GameTypes.BuildingType.MainHut:
-                mMaterialsMap = Globals.MAINHUT_CONSTRUCTION_MATERIALS;
-                mName = "MainHut Construct";
+			case GameTypes.BuildingType.TownHall:
+                mMaterialsMap = Globals.TOWNHALL_CONSTRUCTION_MATERIALS;
+                mName = "TownHall Construct";
                 break;
+			case GameTypes.BuildingType.House:
+				mMaterialsMap = Globals.HOUSE_CONSTRUCTION_MATERIALS;
+				mName = "House Construct";
+				break;
             case GameTypes.BuildingType.Stockpile:
                 mMaterialsMap = Globals.STOCKPILE_CONSTRUCTION_MATERIALS;
                 mName = "Stockpile Construct";
@@ -144,6 +167,10 @@ public class Construction : EntityAction
 			case GameTypes.BuildingType.SpearWorkshop:
 				mMaterialsMap = Globals.SPEARWORKSHOP_CONSTRUCTION_MATERIALS;
 				mName = "Spear Workshop Construct";
+				break;
+			case GameTypes.BuildingType.HandCartWorkshop:
+				mMaterialsMap = Globals.HANDCARTWORKSHOP_CONSTRUCTION_MATERIALS;
+				mName = "HandCart Workshop Construct";
 				break;
             default:
                 Debug.LogError("Construction(Building) type not recognised");

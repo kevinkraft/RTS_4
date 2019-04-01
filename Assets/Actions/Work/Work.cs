@@ -126,14 +126,6 @@ public class Work : Action
             return;
         }*/
 
-		//does the unit not have space for the created items?
-		if ( mActer.getInventoryFreeSpace() < mTarget.getCreateItemAmount() )
-		{
-			//yes it doesn't have space
-			mActer.dumpInventory();
-			return;
-		}
-
 		//does the unit have the create item amount in their inventory already?
 		Item it = mActer.getItemOfType(mTarget.getCreateItemType());
 		if (it)
@@ -149,6 +141,14 @@ public class Work : Action
 		//is the inventory of the target half full, then take items from the target
 		if ( mTarget.getInventorySize() >= mTarget.getInventory().mCapacity/2f )
 		{
+			//does the unit not have space for the created items?
+			if ( mActer.getInventoryFreeSpace() < mTarget.getCreateItemAmount() )
+			{
+				//yes it doesn't have space
+				mActer.dumpInventory();
+				Debug.Log("Dumping inventory becasue there isn enough space for the created items.");
+				return;
+			}
 			int invspace = mActer.getInventoryFreeSpace();
 			mActer.exchangeWith(mTarget, mTarget.getCreateItemType(), -1*invspace);
 			return;

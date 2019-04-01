@@ -30,7 +30,7 @@ public class Weapon : EquipItem
 		switch (getType())
 		{
 		case GameTypes.ItemType.StoneSpear:
-			mEquipSlot = Globals.EQUIP_ITEM_STONESPEAR_SLOT;
+			mEquipSlots = Globals.EQUIP_ITEM_STONESPEAR_SLOTS;
 			mEquipEffects = Globals.EQUIP_ITEM_STONESPEAR_EQUIP_EFFECTS;
 			break;
 		default:

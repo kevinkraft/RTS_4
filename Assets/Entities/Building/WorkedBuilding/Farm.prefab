@@ -55,7 +55,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4325777486342220}
-  - component: {fileID: 114175733623667736}
+  - component: {fileID: 114064397142738610}
   m_Layer: 0
   m_Name: Farm
   m_TagString: Untagged
@@ -3718,7 +3718,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114175733623667736
+--- !u!114 &114064397142738610
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -3732,7 +3732,7 @@ MonoBehaviour:
   mName: Farm
   mHP: 100
   mTown: {fileID: 0}
-  mType: 3
+  mType: 4
 --- !u!114 &114193402840858930
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3795,7 +3795,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a49201c4fa1ff474992fb5b743ecfd01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mVisible: 0
+  mVisible: 1
 --- !u!114 &114821200646092414
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3807,4 +3807,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d5cac19f677eee4ebe0b20cec96f197, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mVisibleRenderer: {fileID: 0}
+  mVisibleRenderer: {fileID: 114638700599523516}

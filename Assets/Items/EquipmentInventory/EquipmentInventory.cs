@@ -60,19 +60,31 @@ public class EquipmentInventory : ItemGroup
 	public void clearSlot(GameTypes.EquipmentSlots slot)
 	{
 		//is this slot filled?
-		if ( !hasSlot(slot) || !slotFilled(slot) )
+		if ( !hasSlot(slot) || mSlotMap.ContainsKey(slot) == false )
 		{
-			Debug.Log("The inventory doesnt have this slot, or it is not already filled");
+			Debug.Log("The inventory doesnt have this slot, or it is not filled");
+			return;
 		}
 		//find the item in the slot
+		Debug.Log(slot.ToString());
+		//if ( mSlotMap.ContainsKey(slot) == false ) return;
 		EquipItem ei = mSlotMap[slot];
 		//make sure it's valid
 		if (!ei) 
 		{
 			Debug.Log("The item in this slot is invalid");
+			return;
 		}
 		//unequip the item
 		unequipItem(ei);
+	}
+
+	public void clearSlots(List<GameTypes.EquipmentSlots> slots)
+	{
+		foreach (GameTypes.EquipmentSlots es in slots)
+		{
+			clearSlot(es);
+		}
 	}
 
 	public void equipItem(EquipItem eitem)
@@ -93,24 +105,24 @@ public class EquipmentInventory : ItemGroup
 			return;
 		}
 		//Is the slot for this item valid for this inventory
-		GameTypes.EquipmentSlots slot = eitem.getSlot();
-		if ( !hasSlot(slot) )
+		List<GameTypes.EquipmentSlots> slots = eitem.getSlots();
+		if ( !hasSlots(slots) )
 		{
-			Debug.LogError("The inventory doesnt have a slot for this item.");
+			Debug.LogError("The inventory doesnt have the slots for this item.");
 			return;
 		}
 		//check if the slot is already filled
-		if ( slotFilled(slot) == true )
+		if ( slotsFilled(slots) == true )
 		{
 			//clear the slot of the item it contains
-			clearSlot(slot);
+			clearSlots(slots);
 		}
 		//equip the item
 		eitem.equip();
 		//add the attributes to the UnitStats
 		_applyEffectsToUnit(eitem);
 		//add it to the map
-		mSlotMap[eitem.getSlot()] = eitem;
+		_fillSlots(eitem);
 	}
 
 
@@ -161,6 +173,15 @@ public class EquipmentInventory : ItemGroup
 		else return false;
 	}
 
+	public bool hasSlots(List<GameTypes.EquipmentSlots> slots)
+	{
+		foreach (GameTypes.EquipmentSlots es in slots)
+		{
+			if ( hasSlot(es) == false ) return false;
+		}
+		return true;
+	}
+
 	public void unequipItem(EquipItem ei)
 	{
 		//make sure the item is actually in the inventory
@@ -172,19 +193,19 @@ public class EquipmentInventory : ItemGroup
 			return;
 		}
 		//make sure its in there
-		if ( !mSlots.Contains(ei.getSlot()) )
+		if ( hasSlots(ei.getSlots())==false )
 		{
 			Debug.LogWarning("The inventory doesnt have this item equipped.");
 			return;
 		}
-		if ( mSlotMap[ei.getSlot()] != ei )
+		if ( _checkSlots(ei)==false )
 		{
-			Debug.LogWarning("The inventory doesnt have this item equipped.");
+			Debug.LogWarning("The inventory doesnt have this item equipped. Or perhaps its not in all of the necessary slots.");
 			return;
 		}
 		ei.unequip();
 		_removeEffectsFomrUnit(ei);
-		mSlotMap.Remove(ei.getSlot());
+		_unfillSlots(ei);
 	}
 
 	public override void wipe()
@@ -217,6 +238,25 @@ public class EquipmentInventory : ItemGroup
 		return;
 	}
 
+	private bool _checkSlots(EquipItem ei)
+	{
+		//Returns false if the item isnt in all of the slots
+		foreach (GameTypes.EquipmentSlots es in ei.getSlots())
+		{
+			if ( mSlotMap[es] != ei ) return false;
+		}
+		return true;
+
+	}
+
+	private void _fillSlots(EquipItem ei)
+	{
+		foreach (GameTypes.EquipmentSlots es in ei.getSlots())
+		{
+			mSlotMap[es] = ei;
+		}
+	}
+
 	private void _removeEffectsFomrUnit(EquipItem eitem)
 	{
 		Dictionary<GameTypes.UnitStatType,float> effs = eitem.getEffectDict();
@@ -227,6 +267,14 @@ public class EquipmentInventory : ItemGroup
 		return;
 	}
 
+	private void _unfillSlots(EquipItem ei)
+	{
+		foreach (GameTypes.EquipmentSlots es in ei.getSlots())
+		{
+			mSlotMap.Remove(es);
+		}
+	}
+
 	private bool slotFilled(GameTypes.EquipmentSlots slot)
 	{
 		if ( mSlotMap.ContainsKey(slot) )
@@ -235,6 +283,15 @@ public class EquipmentInventory : ItemGroup
 			return true;
 		}
 		else return false;
+	}
+
+	private bool slotsFilled(List<GameTypes.EquipmentSlots> slots)
+	{
+		foreach (GameTypes.EquipmentSlots es in slots)
+		{
+			if ( slotFilled(es) == true ) return true;
+		}
+		return false;
 	}
 	
 

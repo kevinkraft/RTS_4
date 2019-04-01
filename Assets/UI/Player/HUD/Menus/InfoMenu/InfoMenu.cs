@@ -139,7 +139,7 @@ public class InfoMenu : Menu
     //-------------------------------------------------------------------------------------------------
     private void setupBuildingUngarrisonButton(Building b, Button but)
     {
-        Debug.Log("making building ungarrison button");
+        //Debug.Log("making building ungarrison button");
         Text text = but.GetComponentInChildren<Text>();
         if (!text)
             Debug.LogError("can't find ungarrison building button text");
@@ -150,7 +150,7 @@ public class InfoMenu : Menu
     }
     private void setupUnitUngarrisonButton( Unit unit, Button but )
     {
-        Debug.Log("making unit ungarrison button");
+        //Debug.Log("making unit ungarrison button");
         Text text = but.GetComponentInChildren<Text>();
         if (!text)
             Debug.LogError("can't find button text");

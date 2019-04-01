@@ -20,8 +20,9 @@ public class WorkedProdBuilding : WorkedBuilding
 		base.Awake();
 	}
 
-	void Start () 
+	public override void Start () 
 	{
+		//Debug.Log("in worked prod building start: "+mType.ToString());
 		base.Start();
 		//setup the type
 		setupType();
@@ -47,6 +48,7 @@ public class WorkedProdBuilding : WorkedBuilding
 		if( mNeededItemsDict.Count != 0 )
 		{
 			//items are needed, check the inventory for the items
+			Debug.Log("Worked prod building needs items.");
 			moveItems();
 			return;
 			//the working unit is responsible for getting the necessary items
@@ -128,6 +130,14 @@ public class WorkedProdBuilding : WorkedBuilding
 			mWorkers.mCapacity = 1;
 			mCreateItemAmount = 1;
 			mMaterialsNeededToMakeItem = Globals.STONESPEAR_PRODUCTION_MATERIALS;
+			break;
+		case GameTypes.BuildingType.HandCartWorkshop:
+			getInventory().mCapacity = 4;
+			mUnitInventory.mCapacity = 2;
+			mCreateItemType = Globals.HANDCARTWORKSHOP_PRODUCTION_ITEM;
+			mWorkers.mCapacity = 1;
+			mCreateItemAmount = 1;
+			mMaterialsNeededToMakeItem = Globals.HANDCART_PRODUCTION_MATERIALS;
 			break;
 		default:
 			Debug.LogError(string.Format("WorkedProdBuilding type {0} not recognised",mType.ToString()));

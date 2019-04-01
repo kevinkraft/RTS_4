@@ -65,6 +65,11 @@ public class EntityHP : Entity
         mHP = hp;
     }
 
+	public void setTown(Town tw)
+	{
+		mTown = tw;
+	}
+
 
 }
 

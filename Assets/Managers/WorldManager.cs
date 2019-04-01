@@ -56,7 +56,7 @@ public class WorldManager : MonoBehaviour
 
 	public List<Vector2> getGridCoordsOfSurroundingRegions(Region reg)
 	{
-		//returns a list of grid coords around a given region that are empty
+		//returns a list of grid coords around a given region
 		//NEVER USED?
 		return getGridCoordsOfSurroundingRegionsCondition(reg, true);
 	}

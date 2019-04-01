@@ -85,6 +85,19 @@ public class Unit : EntityAction
         mActions.clearAddAction(att);
     }
 
+	public void changeTown(Town ntown)
+	{
+		//change the units town, and more the unit game object to the correct place
+		//remove it from its current town
+		Town otown = getTown();
+		otown.removeEntity("units", this);
+		//add it to the new town, this should also move its game object to a child of the new town
+		ntown.addEntity("units", this);
+
+
+
+	}
+
     public void collectResource(Resource res, bool prepend = false)
     {
         //make a new collect instance as a child of the action group object
@@ -266,9 +279,9 @@ public class Unit : EntityAction
         //check the inventory and do nothing if the unit has the item
         Item item = getItemOfType(type);
         if (item)
-        {
-            //unit has it, do nothing;
-            return true;
+		{
+            //unit has it, do nothing, if it has the desired amount
+			if ( item.getAmount() >= amount ) return true;
         }
         //does the stockpile have some
         Building sp = getStockpile();
@@ -393,6 +406,24 @@ public class Unit : EntityAction
         else
             mActions.prependAction(move);
     }
+
+	public bool moveToInRange(Entity ent, bool clear = true)
+	{
+		//move to the entity taking bounds into accout.
+		//returns true if its in range.
+		//is target in range?
+		float dist = Vector3.Distance(transform.position, ent.transform.position);
+		if (dist < getIntrRange()) return true;
+		else
+		{
+			//is it in range of the bounds?
+			if ( calculateExtentsDistance(ent) < getIntrRange() ) return true;
+		}
+		//move to the target taking the bounds into account
+		Vector3 direction = pointOfTouchingBounds( ent );
+		moveTo(direction, false);
+		return false;
+	}
 
 	public string printStats()
 	{
@@ -557,7 +588,7 @@ public class Unit : EntityAction
     {
         if (mPregnant == true && mGender == GameTypes.GenderType.Female)
         {
-            Debug.Log("processing pregnancy");
+            //Debug.Log("processing pregnancy");
             if (mPregnancyProgress >= 100)
             {
                 //reset pregnancy

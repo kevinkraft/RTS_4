@@ -29,8 +29,9 @@ public class Building : EntityAction
 			Debug.LogError("UnitInventory is null.");
     }
 
-    private void Start()
+	public override void Start()
     {
+		//Debug.Log("in building start: "+mType.ToString());
         base.Start();
         //setup the type
         setupType();
@@ -74,6 +75,11 @@ public class Building : EntityAction
         return mUnitInventory.getUnits();
     }
 		
+	public GameTypes.BuildingType getType()
+	{
+		return mType;
+	}
+
     public void removeUnit(Unit unit)
     {
         //DO NOT CALL THIS FROM UNIT
@@ -111,10 +117,14 @@ public class Building : EntityAction
             case GameTypes.BuildingType.Unknown:
                 Debug.LogError("Unknown Building type");
                 break;
-            case GameTypes.BuildingType.MainHut:
+			case GameTypes.BuildingType.TownHall:
                 getInventory().mCapacity = 200;
-                mUnitInventory.mCapacity = 10;
+                mUnitInventory.mCapacity = 30;
                 break;
+			case GameTypes.BuildingType.House:
+				getInventory().mCapacity = 15;
+				mUnitInventory.mCapacity = 7;
+				break;
             case GameTypes.BuildingType.Stockpile:
                 getInventory().mCapacity = 1000;
                 mUnitInventory.mCapacity = 2;

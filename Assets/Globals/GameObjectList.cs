@@ -18,6 +18,7 @@ public class GameObjectList : MonoBehaviour
     public List<GameObject> mConstructions;
     public List<GameObject> mMaps;
 	public List<GameObject> mRegions;
+	public List<GameObject> mTowns;
 	//public GameObject player;
 
     //private members
@@ -40,6 +41,7 @@ public class GameObjectList : MonoBehaviour
             mConstructions = getConstructionComponentObjects();
             mMaps = getMapComponentObjects();
 			mRegions = getRegionComponentObjects();
+			mTowns = getTownComponentObjects();
 			ObjectManager.setGameObjectList(this);
             created = true;
         }
@@ -142,6 +144,15 @@ public class GameObjectList : MonoBehaviour
 		{
 			Region r = mRegions[i].GetComponent<Region>();
 			if (r && r.mName == r_name) return mRegions[i];
+		}
+		return null;
+	}
+	public GameObject getTown(string t_name)
+	{
+		for (int i = 0; i < mTowns.Count; i++)
+		{
+			Town tw = mTowns[i].GetComponent<Town>();
+			if (tw && tw.mName == t_name) return mTowns[i];
 		}
 		return null;
 	}
@@ -268,6 +279,19 @@ public class GameObjectList : MonoBehaviour
 		foreach (Component cobj in child_objects)
 		{
 			if (cobj.gameObject.GetComponent<Region>() != null)
+				c_objects.Add(cobj.gameObject);
+		}
+		return c_objects;
+	}
+	private List<GameObject> getTownComponentObjects()
+	{
+		//returns a list of child game objects which contain a Town script component 
+		//this allows to just drop the Town prefabs as children in GameObjectList/Towns
+		List<GameObject> c_objects = new List<GameObject>();
+		Component[] child_objects = this.GetComponentsInChildren<Transform>();
+		foreach (Component cobj in child_objects)
+		{
+			if (cobj.gameObject.GetComponent<Town>() != null)
 				c_objects.Add(cobj.gameObject);
 		}
 		return c_objects;

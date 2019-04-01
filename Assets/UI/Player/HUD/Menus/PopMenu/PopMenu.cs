@@ -163,11 +163,13 @@ public class PopMenu : Menu
         //set the menu position
         setScreenPosition();
     }
+
     /*public void populate(List<Entity> listsel, Entity hit_ent, Vector3 hitPoint)
     {
         EntityAction ent_act = listsel[0] as EntityAction;
         this.populate(ent_act, hit_ent, hitPoint, listsel);
     }*/
+	
     public void populateListMenu()
     {
         //clear the popmenu (it doesnt clear the mOutcomeString)
@@ -323,16 +325,33 @@ public class PopMenu : Menu
                     setActive(false);
                     return;
                 }
-                
                 break;
-		case "Explore":
-			//Debug.Log("Explore action set as outcome");
-			Explore exp = ObjectManager.initExplore(mSelection.transform);
-			mOutcomeAction = exp;
-			break;
-            default:
+			case "Explore":
+				//Debug.Log("Explore action set as outcome");
+				Explore exp = ObjectManager.initExplore(mSelection.transform);
+				mOutcomeAction = exp;
+				break;
+			case "Travel":
+				//Debug.Log("travel selected");
+				Travel trav = ObjectManager.initTravel(mSelection.transform);
+				if (build)
+				{
+					//Debug.Log("building is not null");
+					trav.setDestination(build);
+					mOutcomeAction = trav;
+					break;
+				}
+				else
+				{
+					mOutcome = false;
+					//Debug.Log("building is null");
+				}
+				setActive(false);
+				break;
+			default:
                 Debug.LogError(string.Format("Action keyword {0} not recoginised.",oname));
                 break;
+
         }
         if (!mListActive)
             mOutcome = true;
@@ -399,6 +418,10 @@ public class PopMenu : Menu
         {
             titles.Add("Garrison");
             titles.Add("Procreate");
+			if (build.getType()==GameTypes.BuildingType.TownHall)
+			{
+				titles.Add("Travel");
+			}
         }
         Resource res = mHitObject as Resource;
         if (res)

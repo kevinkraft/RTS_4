@@ -29,18 +29,22 @@ public class Town : EntityContainer
         List<Building> bs = new List<Building>(GetComponentsInChildren<Building>());
         foreach (Building b in bs)
         {
-            if (b.mType == GameTypes.BuildingType.MainHut)
+            if (b.mType == GameTypes.BuildingType.TownHall)
             {
                 mMainBuilding = b;
                 break;
             }
         }
-        if (!mMainBuilding)
-            Debug.LogError("No Main building found for Town");
+		//if (!mMainBuilding && !GetComponentInParent<GameObjectList>() )
+        //    Debug.LogError("No Main building found for Town");
 
     }
+
     void Start()
     {
+		//add groups that we will need
+		newGroup("units");
+		newGroup("buildings");
         //search for entities in children and put them in the right group
         foreach (Transform child in transform)
         {
@@ -92,6 +96,7 @@ public class Town : EntityContainer
     {
         base.addEntity(group_name, b);
         b.transform.SetParent(this.transform);
+		b.setTown(this);
         if (!b)
             return;
         //if its a stockpile building and there isn't one already then add it as the Town stockpile
@@ -104,13 +109,24 @@ public class Town : EntityContainer
         {
             mStockpile = b;
         }
+		//add a town hall if there isnt already one
+		if (!mMainBuilding && b.getType()==GameTypes.BuildingType.TownHall)
+		{
+			mMainBuilding = b;
+		}
+		else if (mMainBuilding && mMainBuilding.getType()!=GameTypes.BuildingType.TownHall && b.getType()==GameTypes.BuildingType.TownHall)
+		{
+			mMainBuilding = b;
+		}
 
     }
     public void addEntity(string group_name, Unit u)
     {
         base.addEntity(group_name, u);
+		u.setTown(this);
         u.transform.SetParent(this.transform);
     }
+
     public Building getBuildingOfType(GameTypes.BuildingType type)
     {
         Building res = null;
@@ -150,6 +166,12 @@ public class Town : EntityContainer
 		return ulist;
 	}
 
+	//this function should really be private, but its used from RTS
+	public void _setRegion(Region reg)
+	{
+		mRegion = reg;
+	}
+
     //-------------------------------------------------------------------------------------------------
     // private methods
     //-------------------------------------------------------------------------------------------------
@@ -179,7 +201,7 @@ public class Town : EntityContainer
             if (mGroupMap["units"].Count == 0)
             {
                 //no units
-                deleteSelf();
+				if (!GetComponentInParent<GameObjectList>()) deleteSelf();
                 return true;
             }
             else
@@ -222,11 +244,13 @@ public class Town : EntityContainer
         }
         return false;
     }
+
     private void deleteSelf()
     {
-        mRegion.removeContainer("towns", this);
+		mRegion.removeContainer("towns", this);
         Destroy(this.gameObject);
     }
+
     private void setStockpile(Building sp)
     {
         mStockpile = sp;

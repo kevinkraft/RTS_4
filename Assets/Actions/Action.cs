@@ -7,6 +7,9 @@ using UnityEngine;
 // * actions must be stored in "EntityAction > Actions >" as it will look for the EntityAction as its parent.
 // * action is disabled until its at the front of the EntityAction's ActionGroup it is then enabled.
 // *  when finished mComplete is set to true and the action gets deleted.
+// * Why do the Action child classes need to have public variables? It doesnt work if they are private.
+//   It does work if they have SerializeField, but thats not supposed to do anything to the actual
+//   code?
 
 public class Action : MonoBehaviour
 {

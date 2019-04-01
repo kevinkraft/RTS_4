@@ -20,12 +20,32 @@ using RTS;
 //       * Has two job types
 //         * Traders move to and from other TradeDepots to exchange goods
 //         * Stockers just move goods around in the local Town
+// * Town stockpile
+//   * A town should have a main stockpile and a list of stockpiles
 // * Vehicles
 //   * Implement Vehicles
+//     * A vechicle is like a building that can be moved.
 //   * Add a Cart class
+//     * A cart has a medium sized inventory that can hold items
+//     * Towns treat carts as a new stockpile in the town
+//       * No, this wont work.
+//     * Could have a load action that will fill the carts inventory with 
+//       a certain resource.
 //   * Add a WorkedProdBuilding for making carts
-// * Need to add Town to the GameObjectsList so that they can be instantiated
-//   * Currently there is no way to start a new town
+// * Adding a new town
+//   * Need to add Town to the GameObjectsList so that they can be instantiated(done)
+//   * A new town is made when a TownHall is built(done)
+//   * Can you change the name of MainHut to Town? (done)
+//     * Make the Main hut bigger. (done) 
+//   * Add another building that is a hut (house, done)
+//   * The problem is how can a unit get to another region to build a new town
+//     * They need a HandCart item that goes into a Vehicle slot in the Equipment inventory (done)
+//       * This allows for more inventory space(done)
+//       * Make a prod building for HandCart(done)
+//     * Need a new action, Traval
+//       * The unit moves themselves to a new Town.
+//       * Probably its best that the unit fills their inventory with food, then transfers
+//         themself to the other Town and then starts moving to the other town.
 // * Add a home Town attribute to Units
 //   * In this way we can always check why they are loyal to, when Loyalty is implemented
 //   * We can always check if they will answer commands from the user and from the leader of what ever
@@ -81,6 +101,15 @@ using RTS;
 //         * delete town if empty, delete units if there are units but no buildings and no other town(done)
 //     * I played the game for ages with a few hundred units and it didnt slow down(ok)
 // * GENERAL: 
+//   * The word building icons dont work in regions outside the main region, same with the idle unit icon
+//   * The behaviour of the Travel action is wrong.
+//     * It seems to be a problem with checking if the unit it in the same Region as the new town
+//       * The units return to their current old town even when they are right beside the new tow
+//     * There is also a problem with stockpiles, they still use the stockpile from the old town somtimes
+//       * Ive seen them do this when Constructing and the item they need is not in the new town stockpile
+//       * Probably there is a hardcoded use of a stockpile somewhere, instead of using town.stockpile.
+//     * There is also a problem with the moveToInRange function
+//       * I saw a unit get to the right spot, but the function never returned true, the move action never finished.
 //   * The icon for a worked building with not enough workers is not being shown.(fixed, was a problem with a farm with its gem object off)
 //   * The Eat action is taking far too long.(fixed)
 //     * The problem was caused by rounding as I had changed item numbers to ints (ok)

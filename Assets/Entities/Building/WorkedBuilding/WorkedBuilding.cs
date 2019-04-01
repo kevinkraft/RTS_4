@@ -43,8 +43,10 @@ public class WorkedBuilding : Building
 		if ( uinvl.Count == 0 )
 			Debug.LogError("UnitInventory is null.");
 	}
-    private void Start()
+
+	public override void Start()
     {
+		//Debug.Log("in worked building start: "+mType.ToString());
         base.Start();
         //setup the type
         setupType();

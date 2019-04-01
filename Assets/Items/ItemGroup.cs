@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using RTS;
 
+//To Do:
+// * When an Item is dropped, it should be made into a game entity that can be looted by someone else.
+
+
 public class ItemGroup : MonoBehaviour
 {
 
@@ -20,26 +24,42 @@ public class ItemGroup : MonoBehaviour
     {
         mItems = new List<Item>( GetComponentsInChildren<Item>() );
     }
+
     public virtual void Update()
     {
         //remove an item if it has 0 or less
-        GameTypes.ItemType remove_type = GameTypes.ItemType.Unknown;
-        int i = 0;
+		List<Item> ritems = new List<Item>();
         foreach ( Item item in mItems)
         {
 			if (item.getAmount() <= 0)
             {
-
-				remove_type = item.getType();
-                break;
+				ritems.Add(item);
+				//_removeItemOfType(item.getType());
             }
-            i++;
         }
-        if (remove_type != GameTypes.ItemType.Unknown)
-        {
-            Destroy(mItems[i].gameObject);
-            mItems.RemoveAt(i);
-        }
+		foreach(Item ri in ritems)
+		{
+			_removeItemOfType(ri.getType());
+		}
+
+		//check that the inventory cap hasnt suddenly gotten much smaller than the size
+		while ( mCapacity < getSize() )
+		{
+			//the inventory cap has suddenly gotten too small
+			foreach(Item item in mItems)
+			{
+				//dont remove equipped items
+				EquipItem ei = item as EquipItem;
+				if (ei)
+				{
+					if (ei.isEquipped() == true) continue;
+				}
+				_removeItemOfType(item.getType());
+				break;
+			}
+		}
+
+
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -78,7 +98,7 @@ public class ItemGroup : MonoBehaviour
         else
 			return 0;
     }
-
+		
     public Item getItemOfType(GameTypes.ItemType type)
     {
         foreach (Item item in mItems)
@@ -140,6 +160,25 @@ public class ItemGroup : MonoBehaviour
     // private methods
     //-------------------------------------------------------------------------------------------------
 
+	private int _getIndexOfItemOfType(GameTypes.ItemType itype)
+	{
+		int ind = 0;
+		foreach(Item item in mItems)
+		{
+			if ( item.getType() == itype ) return ind;
+			ind++;
+		}
+		return -1;
+	}
+
+	private void _removeItemOfType(GameTypes.ItemType itype)
+	{
+		int ind = _getIndexOfItemOfType(itype);
+		if (ind < 0 || ind > mItems.Count-1) return;
+		//THIS SHOULD REALLY PLACE AN ENTITY THAT IS A BAG OF ITEMS THAT CAN BE PICKED UP BY SOMEONE ELSE
+		Destroy(mItems[ind].gameObject);
+		mItems.RemoveAt(ind);
+	}
 
 
 }

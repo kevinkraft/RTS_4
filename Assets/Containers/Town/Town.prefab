@@ -51,6 +51,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c82736dc0c1d8334bada4eec19f265e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mName: Town1
+  mName: Town
   mStockpile: {fileID: 0}
   mMainBuilding: {fileID: 0}
