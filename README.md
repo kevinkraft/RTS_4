@@ -46,6 +46,7 @@ Actions
 * Move
 * Construct(New town)
 * Exchange
+* Travel (Switches the town and stockpile that a unit uses)
 
 Notes
 -------------
@@ -57,5 +58,9 @@ Issues
 * Garrisoned Units or Procreating Units that get hungry and leave their Garrison to get food at the stockpile often collide with the stockpile model instead of moving beside it. Also the Procreate Action gets cancelled and their Action queue gets cleared, the Units are supposed to return to the Action they were doing before they went to Eat.
 * There is a display bug where the cation symbols also display in the sky above the camera. If there was a 
 limit on the camera tilt then this wouldn't be visible, but the camera can tilt in any direction, which 
-creates lots of visual problems.
+creates lots of visual problems. This is actually a bigger problem. The caution symbols do not display above map squares other than the original one.
+* Entities do not collide with each other, so that can occupy the same space. Collisions were never implemented so it is expected, but it is very annoying.
+* There is a white shadow on the smaller selection boxes at certain zooms.
+* The exchange menu doesn't reset the selected item. If you previously selected food, but the drop down says wood, clicking OK will add a food exchange. You need to reselect wood in the drop down.
+* The travel action can be quite annoying. If the unit is standing right beside the new town ,they still go back to their own town to get food before travelling back to the new town.
 
