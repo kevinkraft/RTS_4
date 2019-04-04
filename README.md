@@ -1,4 +1,4 @@
-# RTS_4
+# RTS 4
 3D RTS game in unity. UI Improvements from the engine I made with SDL(RTS_3). 
 
 Download And Play (Legacy, not as stable 0.5)
